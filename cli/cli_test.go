@@ -3,7 +3,7 @@ package cli
 import "testing"
 
 func spawnBash() CLI {
-	t := target{"bash --norc -i"}
+	t := target{"bash --norc -i", "source bashrc\n"}
 	return Spawn(t)
 }
 
