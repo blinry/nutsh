@@ -3,18 +3,20 @@ package cli
 import "testing"
 
 func spawnBash() CLI {
-    t := target{"bash --norc -i"}
-    return Spawn(t)
+	t := target{"bash --norc -i"}
+	return Spawn(t)
+}
+
+func queryTest(t *testing.T, c CLI, command string, output string) {
+	o := c.Query(command)
+	if o != output {
+		t.Fatalf("Expected %q, got %q.", output, o)
+	}
 }
 
 func TestQuery(t *testing.T) {
-    b := spawnBash()
-    r := b.Query("echo hi")
-    if r != "hi\r" {
-        t.Fatalf("Expected 'hi\\r'")
-    }
-    r = b.Query("echo $((1+1))")
-    if r != "2\r" {
-        t.Fatalf("Expected '2\\r'")
-    }
+	b := spawnBash()
+
+	queryTest(t, b, "echo hi", "hi\r")
+	queryTest(t, b, "echo $((1+1))", "2\r")
 }
