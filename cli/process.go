@@ -3,6 +3,7 @@ package cli
 import (
 	"os"
 	"os/exec"
+	"io"
 	"bufio"
     "github.com/kr/pty"
 )
@@ -39,7 +40,13 @@ func inputStdin(stdin input) {
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		for {
-			r, _, _ := reader.ReadRune()
+			r, _, err := reader.ReadRune()
+			if err != nil {
+				if err == io.EOF {
+					return
+				}
+				panic(err)
+			}
 			stdin.write(string(r))
 		}
 	}

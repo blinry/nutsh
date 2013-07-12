@@ -1,9 +1,12 @@
 package cli
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func spawnBash() CLI {
-	t := target{"bash --norc -i", "source bashrc\n"}
+	t := BashTarget()
 	return Spawn(t)
 }
 
@@ -17,6 +20,7 @@ func queryTest(t *testing.T, c CLI, command string, output string) {
 func TestQuery(t *testing.T) {
 	b := spawnBash()
 
-	queryTest(t, b, "echo hi", "hi\r")
-	queryTest(t, b, "echo $((1+1))", "2\r")
+	queryTest(t, b, "echo hi\n", "hi\r\n")
+	time.Sleep(time.Millisecond)
+	queryTest(t, b, "echo $((1+1))\n", "2\r\n")
 }

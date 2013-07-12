@@ -21,38 +21,44 @@ const (
     promptState
 )
 
-func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune) {
+func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *tokenizerState) {
 	buffer := ""
-	state := cmdinputState
 
 	for {
 		r := <- input
 
         if r == '☃' {
-			switch state {
+			switch *state {
 			case cmdinputState:
-				state++
+				*state++
+				/*
 				<- input
 				<- input
 				<- input
 				<- input
+				*/
 			case cmdechoState:
-				state++
+				*state++
+				<- input
+				<- input
 				<- input
 				<- input
 				<- input
 				<- input
 				tokens <- token{commandType, buffer}
 			case outputState:
-				state++
+				*state++
 				tokens <- token{outputType, buffer}
 			case promptState:
-				state = cmdinputState
+				*state = cmdinputState
 				tokens <- token{promptType, buffer}
 			}
 			buffer = ""
 		} else {
 			buffer = buffer+string(r)
+			if *state == cmdinputState {
+				runes <- r
+			}
 		}
 	}
 }

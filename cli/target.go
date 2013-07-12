@@ -18,3 +18,7 @@ func stringToCmd(s string) *exec.Cmd {
         return exec.Command(command_components[0], command_components[1:len(command_components)-1]...)
 	}
 }
+
+func BashTarget() target {
+	return target{"bash --norc -i", "source bashrc\n"}
+}

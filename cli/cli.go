@@ -13,14 +13,16 @@ type CLI struct {
 func Spawn(t target) CLI {
 	stdin := make(chan rune)
 	stdout := make(chan rune)
+	state := outputState
 
-	c := CLI{make(chan token), make(chan rune), input{stdin}}
+	c := CLI{make(chan token), make(chan rune), input{stdin, &state}}
 
 	go startProcess(t.spawnCmd, stdin, stdout)
-	go tokenize(stdout, c.tokens, c.runes)
+	go tokenize(stdout, c.tokens, c.runes, &state)
 	go inputStdin(c.input)
 
 	c.send(t.initCmd)
+	c.read(promptType)
 	
 	return c
 }
@@ -52,7 +54,8 @@ func (c CLI) read(k tokenType) string {
 	for {
 		select {
 		case t := <- c.tokens:
-			if t.tokenType == outputType {
+			//fmt.Printf("token %v: %q\n", t.tokenType, t.string)
+			if t.tokenType == k {
 				return t.string
 			}
 		case r := <- c.runes:
