@@ -20,5 +20,6 @@ func stringToCmd(s string) *exec.Cmd {
 }
 
 func BashTarget() target {
-	return target{"bash --norc -i", "source bashrc\n"}
+	return target{"bash --norc -i", `export PS1="$(echo -e "\u2603")\w $ $(echo -e "\u2603")"
+`}
 }
