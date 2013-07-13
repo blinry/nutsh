@@ -1,7 +1,6 @@
 package cli
 
 type tokenType int
-
 const (
 	outputType tokenType = iota
 	promptType

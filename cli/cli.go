@@ -7,22 +7,27 @@ import (
 type CLI struct {
 	tokens chan token
 	runes chan rune
-	input
+	input chan string
 }
 
 func Spawn(t target) CLI {
 	stdin := make(chan rune)
 	stdout := make(chan rune)
+	tokens := make(chan token)
+	runes := make(chan rune)
+	input := make(chan string)
 	state := outputState
 
-	c := CLI{make(chan token), make(chan rune), input{stdin, &state}}
+	c := CLI{tokens, runes, input}
 
 	go startProcess(t.spawnCmd, stdin, stdout)
-	go tokenize(stdout, c.tokens, c.runes, &state)
-	go inputStdin(c.input)
+	go tokenize(stdout, tokens, runes, &state)
+	go inputStdin(input)
+	go filterInput(input, stdin, &state)
 
 	c.send(t.initCmd)
 	c.read(promptType)
+	//print("!!!")
 	
 	return c
 }
@@ -47,10 +52,12 @@ func (c CLI) Query(cmd string) string {
 }
 
 func (c CLI) send(s string) {
-	c.input.write(s)
+	c.input <- s
 }
 
 func (c CLI) read(k tokenType) string {
+	//print("expect")
+	//print(int(k))
 	for {
 		select {
 		case t := <- c.tokens:

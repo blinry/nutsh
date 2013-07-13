@@ -36,7 +36,7 @@ func startProcess(command string, stdin <-chan rune, stdout chan<- rune) {
 	}()
 }
 
-func inputStdin(stdin input) {
+func inputStdin(input chan<- string) {
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		for {
@@ -47,7 +47,7 @@ func inputStdin(stdin input) {
 				}
 				panic(err)
 			}
-			stdin.write(string(r))
+			input <- string(r)
 		}
 	}
 }
