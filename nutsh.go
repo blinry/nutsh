@@ -3,7 +3,7 @@ package main
 import "nutsh/cli"
 
 func main() {
-	c := cli.Spawn(cli.BashTarget())
+	c := cli.Spawn(cli.RubyTarget())
 
 	for {
 		output := c.ReadOutput()

@@ -8,6 +8,8 @@ import (
 type target struct {
 	spawnCmd string
 	initCmd string
+	markedPrompt bool
+	prompt string
 }
 
 func stringToCmd(s string) *exec.Cmd {
@@ -20,6 +22,21 @@ func stringToCmd(s string) *exec.Cmd {
 }
 
 func BashTarget() target {
-	return target{"bash --norc -i", `export PS1="$(echo -e "\u2603")\w $ $(echo -e "\u2603")"
-`}
+	return target{
+		spawnCmd: "bash --norc -i",
+		initCmd: `export PS1="$(echo -e "\u2603")\w $ $(echo -e "\u2603")"
+`,
+		markedPrompt: true,
+	}
+}
+
+func RubyTarget() target {
+	return target{
+		spawnCmd: "irb",
+		initCmd: `conf.prompt_i = "\u2603>> \u2603";0
+conf.return_format = "%s\n"
+`,
+		//markedPrompt: false,
+		//prompt: ">> ",
+	}
 }
