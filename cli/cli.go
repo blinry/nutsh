@@ -26,8 +26,7 @@ func Spawn(t target) CLI {
 	go filterInput(input, stdin, &state)
 
 	c.send(t.initCmd)
-	c.read(promptType)
-	//print("!!!")
+	c.read(outputType)
 	
 	return c
 }
@@ -46,6 +45,7 @@ func (c CLI) ReadCommand() string {
 }
 
 func (c CLI) Query(cmd string) string {
+	c.read(promptType)
 	c.send(cmd)
 	o := c.ReadOutput()
 	return o
@@ -56,8 +56,6 @@ func (c CLI) send(s string) {
 }
 
 func (c CLI) read(k tokenType) string {
-	//print("expect")
-	//print(int(k))
 	for {
 		select {
 		case t := <- c.tokens:
