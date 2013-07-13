@@ -63,6 +63,11 @@ func TestBashLoop(t *testing.T) {
 	equalTest(t, output, "flupp\r\n")
 }
 
+func TestBashEmpty(t *testing.T) {
+	c := spawnBash()
+	queryTest(t, c, "\n", "")
+}
+
 func TestRubyQueries(t *testing.T) {
 	b := spawnRuby()
 

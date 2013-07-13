@@ -3,7 +3,6 @@ package cli
 import (
 	"os"
 	"os/exec"
-	"io"
 	"bufio"
     "github.com/kr/pty"
 )
@@ -15,8 +14,8 @@ func init() {
 func startProcess(command string, stdin <-chan rune, stdout chan<- rune) {
 	tty, _ := pty.Start(stringToCmd(command))
 
-	input, _ := os.Create("input")
-	output, _ := os.Create("output")
+	input, _ := os.Create("/tmp/nutsh-input")
+	output, _ := os.Create("/tmp/nutsh-output")
 
 	go func() {
 		for {
@@ -34,20 +33,4 @@ func startProcess(command string, stdin <-chan rune, stdout chan<- rune) {
 			stdout <- r
 		}
 	}()
-}
-
-func inputStdin(input chan<- string) {
-	for {
-		reader := bufio.NewReader(os.Stdin)
-		for {
-			r, _, err := reader.ReadRune()
-			if err != nil {
-				if err == io.EOF {
-					return
-				}
-				panic(err)
-			}
-			input <- string(r)
-		}
-	}
 }

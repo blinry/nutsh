@@ -53,7 +53,7 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 			buffer = ""
 		} else {
 			buffer = buffer+string(r)
-			if *state == cmdinputState {
+			if *state == cmdinputState || *state == cmdechoState {
 				runes <- r
 			}
 		}

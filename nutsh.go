@@ -10,9 +10,11 @@ func main() {
 
 	for {
 		cmd := c.ReadCommand()
-		fmt.Printf("\n\n    you entered: %q\n\n", cmd)
+		fmt.Printf("[35m\n\n    you entered: %q\n\n[0m", cmd)
 
 		output := c.ReadOutput()
-		fmt.Printf("\n\n    the output was: %q\n\n", output)
+		fmt.Print(output)
+
+		fmt.Printf("[32m\n    the output was: %q\n\n[0m", output)
 	}
 }
