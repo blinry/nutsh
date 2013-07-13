@@ -24,7 +24,7 @@ func stringToCmd(s string) *exec.Cmd {
 func BashTarget() target {
 	return target{
 		spawnCmd: "bash --norc -i",
-		initCmd: `export PS1="$(echo -e "\u2603")\w $ $(echo -e "\u2603")"
+		initCmd: `export PS1="$(echo -e "\u2603")\e[34m\e[1m\w $ \e[0m$(echo -e "\u2603")"
 `,
 		markedPrompt: true,
 	}
@@ -33,8 +33,8 @@ func BashTarget() target {
 func RubyTarget() target {
 	return target{
 		spawnCmd: "irb",
-		initCmd: `conf.prompt_i = "\u2603>> \u2603";0
-conf.return_format = "%s\n"
+		initCmd: `conf.return_format = "%s\n"
+conf.prompt_i = "\u2603>> \u2603";0
 `,
 		//markedPrompt: false,
 		//prompt: ">> ",

@@ -31,12 +31,10 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 			switch *state {
 			case cmdinputState:
 				*state++
-				/*
 				<- input
 				<- input
 				<- input
 				<- input
-				*/
 			case cmdechoState:
 				*state++
 				<- input
@@ -45,7 +43,7 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 				<- input
 				<- input
 				<- input
-				tokens <- token{commandType, buffer}
+				tokens <- token{commandType, buffer[0:len(buffer)-1]}
 			case outputState:
 				*state++
 				tokens <- token{outputType, buffer}
