@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"nutsh/cli"
+	"morr.cc/nutsh.git/cli"
 )
 
 func main() {
