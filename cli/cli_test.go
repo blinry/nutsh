@@ -6,13 +6,11 @@ import (
 )
 
 func spawnBash() CLI {
-	t := BashTarget()
-	return Spawn(t)
+	return Spawn("bash")
 }
 
 func spawnRuby() CLI {
-	t := RubyTarget()
-	return Spawn(t)
+	return Spawn("ruby")
 }
 
 func equalTest(t *testing.T, s1, s2 interface{}) {

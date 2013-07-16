@@ -10,7 +10,11 @@ type CLI struct {
 	input chan string
 }
 
-func Spawn(t target) CLI {
+// Spawn starts a new instance of the target.
+func Spawn(target string) CLI {
+
+	t := targets[target]
+
 	stdin := make(chan rune)
 	stdout := make(chan rune)
 	tokens := make(chan token)
@@ -31,19 +35,24 @@ func Spawn(t target) CLI {
 	return c
 }
 
+// ReadOutput waits for the next output token and returns it.
 func (c CLI) ReadOutput() string {
 	return c.read(outputType)
 }
 
+// WasInteractive return true if the last ReadOutput invocation turned
+// interactive. In that case, the output was already printed.
 func (c CLI) WasInteractive() bool {
 	return false
 }
 
+// ReadCommand waits for the next command token and returns it.
 func (c CLI) ReadCommand() string {
 	fmt.Print(c.read(promptType))
 	return c.read(commandType)
 }
 
+// Query executes cmd and returns the output.
 func (c CLI) Query(cmd string) string {
 	c.read(promptType)
 	c.send(cmd)
