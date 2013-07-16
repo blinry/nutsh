@@ -1,6 +1,7 @@
 package cli
 
 type tokenType int
+
 const (
 	outputType tokenType = iota
 	promptType
@@ -13,36 +14,37 @@ type token struct {
 }
 
 type tokenizerState int
+
 const (
-    cmdinputState tokenizerState = iota
-    cmdechoState
-    outputState
-    promptState
+	cmdinputState tokenizerState = iota
+	cmdechoState
+	outputState
+	promptState
 )
 
 func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *tokenizerState) {
 	buffer := ""
 
 	for {
-		r := <- input
+		r := <-input
 
-        if r == '☃' {
+		if r == '☃' {
 			switch *state {
 			case cmdinputState:
 				*state++
-				<- input
-				<- input
-				<- input
-				<- input
+				<-input
+				<-input
+				<-input
+				<-input
 			case cmdechoState:
 				*state++
-				<- input
-				<- input
-				<- input
-				<- input
-				<- input
-				<- input
-				tokens <- token{commandType, buffer[0:len(buffer)-1]}
+				<-input
+				<-input
+				<-input
+				<-input
+				<-input
+				<-input
+				tokens <- token{commandType, buffer[0 : len(buffer)-1]}
 			case outputState:
 				*state++
 				tokens <- token{outputType, buffer}
@@ -52,7 +54,7 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 			}
 			buffer = ""
 		} else {
-			buffer = buffer+string(r)
+			buffer = buffer + string(r)
 			if *state == cmdinputState || *state == cmdechoState {
 				runes <- r
 			}

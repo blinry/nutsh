@@ -6,8 +6,8 @@ import (
 
 type CLI struct {
 	tokens chan token
-	runes chan rune
-	input chan string
+	runes  chan rune
+	input  chan string
 }
 
 // Spawn starts a new instance of the target.
@@ -31,7 +31,7 @@ func Spawn(target string) CLI {
 
 	c.send(t.initCmd)
 	c.read(outputType)
-	
+
 	return c
 }
 
@@ -67,12 +67,12 @@ func (c CLI) send(s string) {
 func (c CLI) read(k tokenType) string {
 	for {
 		select {
-		case t := <- c.tokens:
+		case t := <-c.tokens:
 			//fmt.Printf("token %v: %q\n", t.tokenType, t.string)
 			if t.tokenType == k {
 				return t.string
 			}
-		case r := <- c.runes:
+		case r := <-c.runes:
 			fmt.Printf(string(r))
 		}
 	}

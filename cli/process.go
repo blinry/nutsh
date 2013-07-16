@@ -1,14 +1,14 @@
 package cli
 
 import (
+	"bufio"
+	"github.com/kr/pty"
 	"os"
 	"os/exec"
-	"bufio"
-    "github.com/kr/pty"
 )
 
 func init() {
-    exec.Command("stty", "-F", "/dev/tty", "-echo", "-icanon", "min", "1").Run()
+	exec.Command("stty", "-F", "/dev/tty", "-echo", "-icanon", "min", "1").Run()
 }
 
 func startProcess(command string, stdin <-chan rune, stdout chan<- rune) {
@@ -19,7 +19,7 @@ func startProcess(command string, stdin <-chan rune, stdout chan<- rune) {
 
 	go func() {
 		for {
-			r := <- stdin
+			r := <-stdin
 			input.Write([]byte(string(r)))
 			tty.Write([]byte(string(r)))
 		}
