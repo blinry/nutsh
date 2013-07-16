@@ -1,5 +1,9 @@
 package cli
 
+import (
+	"time"
+)
+
 type tokenType int
 
 const (
@@ -26,6 +30,19 @@ const (
 func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *tokenizerState) {
 	buffer := ""
 	queue := make([]rune, 0)
+	interactive := false
+    timer := time.NewTimer(0)
+	timer.Stop()
+
+    go func() {
+        for {
+            <-timer.C
+            interactive = true
+			for _, r := range buffer {
+				runes <- r
+			}
+        }
+    }()
 
 	for {
 
@@ -58,8 +75,12 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 				<-input
 
 				//queue = append(queue, <-input)
-				r2 := <-input
-				queue = append(queue, r2)
+				var r2 rune
+				select {
+				case r2 = <-input:
+					queue = append(queue, r2)
+				case <-time.After(10*time.Millisecond):
+				}
 
 				if r2 == '★' {
 					tokens <- token{partialCommandType, buffer[0 : len(buffer)-1]+"\n"}
@@ -68,10 +89,14 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 				} else {
 					tokens <- token{finalCommandType, buffer[0 : len(buffer)-1]+"\n"}
 					*state++
+					interactive = false
+                timer.Reset(500*time.Millisecond)
 				}
 			case outputState:
 				*state++
 				tokens <- token{outputType, buffer}
+				interactive = false
+                timer.Stop()
 			case promptState:
 				*state = cmdinputState
 				tokens <- token{promptType, buffer}
@@ -79,7 +104,7 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 			buffer = ""
 		} else {
 			buffer = buffer + string(r)
-			if *state == cmdinputState || *state == cmdechoState {
+			if interactive || *state == cmdinputState || *state == cmdechoState {
 				runes <- r
 			}
 		}

@@ -23,6 +23,13 @@ export PS1="$(echo -e "\u2603")\e[34m\e[1m\w $ \e[0m$(echo -e "\u2603")"
 conf.prompt_i = "\u2603>> \u2603";0
 `,
 	},
+	"python": target{
+		spawnCmd: "python",
+		initCmd: `import sys
+sys.ps2 = "\u2605... \u2603"
+sys.ps1 = "\u2603>>> \u2603"
+`,
+	},
 }
 
 func stringToCmd(s string) *exec.Cmd {

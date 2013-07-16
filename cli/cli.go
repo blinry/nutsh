@@ -38,21 +38,16 @@ func Spawn(target string) CLI {
 }
 
 // ReadOutput waits for the next output token and returns it.
-func (c CLI) ReadOutput() string {
+func (c CLI) ReadOutput() (string, bool) {
 	return c.read(outputType)
-}
-
-// WasInteractive return true if the last ReadOutput invocation turned
-// interactive. In that case, the output was already printed.
-func (c CLI) WasInteractive() bool {
-	return false
 }
 
 // ReadCommand waits for the next command token and returns it.
 func (c CLI) ReadCommand() string {
 	command := ""
 
-	fmt.Print(c.read(promptType))
+	prompt, _ := c.read(promptType)
+	fmt.Print(prompt)
 	for {
 		select {
 		case t := <-c.tokens:
@@ -79,7 +74,7 @@ func (c CLI) Query(cmd string) string {
 	c.read(promptType)
 	c.send(cmd)
 	c.allowInteractivity = false
-	o := c.ReadOutput()
+	o, _ := c.ReadOutput()
 	c.allowInteractivity = true
 	return o
 }
@@ -88,15 +83,18 @@ func (c CLI) send(s string) {
 	c.input <- s
 }
 
-func (c CLI) read(k tokenType) string {
+func (c CLI) read(k tokenType) (data string, wasInteractive bool) {
+	wasInteractive = false
 	for {
 		select {
 		case t := <-c.tokens:
 			if t.tokenType == k {
-				return t.string
+				data = t.string
+				return
 			}
 		case r := <-c.runes:
 			if c.allowInteractivity {
+				wasInteractive = true
 				fmt.Printf(string(r))
 			}
 		}

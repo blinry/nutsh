@@ -2,7 +2,7 @@ package cli
 
 import (
 	"testing"
-	//"time"
+	"time"
 )
 
 func spawnBash() CLI {
@@ -11,6 +11,10 @@ func spawnBash() CLI {
 
 func spawnRuby() CLI {
 	return Spawn("ruby")
+}
+
+func spawnPython() CLI {
+	return Spawn("python")
 }
 
 func equalTest(t *testing.T, s1, s2 interface{}) {
@@ -62,15 +66,50 @@ func TestBashLoop(t *testing.T) {
 
 	c.read(promptType)
 	c.send("echo flupp\n")
-	cmd := c.read(finalCommandType)
+	cmd, _ := c.read(finalCommandType)
 	equalTest(t, cmd, "echo flupp\n")
-	output := c.read(outputType)
+	output, i := c.ReadOutput()
 	equalTest(t, output, "flupp\r\n")
+	equalTest(t, i, false)
 }
 
 func TestBashEmpty(t *testing.T) {
 	c := spawnBash()
 	queryTest(t, c, "\n", "")
+}
+
+func TestBashMultiLine(t *testing.T) {
+	c := spawnBash()
+	queryTest(t, c, "echo \"multi\nline\"\n", "multi\r\nline\r\n")
+}
+
+func TestBashInteractive(t *testing.T) {
+	c := spawnBash()
+	c.read(promptType)
+	c.send("vim\n")
+	c.read(finalCommandType)
+	for {
+		select {
+		case <-c.runes:
+			return
+		case <-c.tokens:
+			// avoid blocking
+		case <-time.After(1*time.Second):
+			t.Fatal("No interactivity after 1 second")
+		}
+	}
+}
+
+func TestBashInteractiveAPI(t *testing.T) {
+	c := spawnBash()
+	c.read(promptType)
+	c.send("vim\n")
+	go func() {
+		<-time.After(500*time.Millisecond)
+		c.send(":q\n")
+	}()
+	_, i := c.ReadOutput()
+	equalTest(t, i, true)
 }
 
 func TestRubyQueries(t *testing.T) {
@@ -79,8 +118,13 @@ func TestRubyQueries(t *testing.T) {
 	queryTest(t, b, "1+1\n", "2\r\n")
 }
 
-func TestBashMultiLine(t *testing.T) {
-	c := spawnBash()
-	queryTest(t, c, "echo \"multi\nline\"\n", "multi\r\nline\r\n")
+func TestPythonQueries(t *testing.T) {
+	b := spawnPython()
+
+	queryTest(t, b, "1+1\n", "2\r\n")
 }
 
+func TestPythonMultiLine(t *testing.T) {
+	c := spawnPython()
+	queryTest(t, c, "if 1:\n\t42\n\n", "42\r\n")
+}
