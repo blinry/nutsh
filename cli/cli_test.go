@@ -52,6 +52,7 @@ func TestBashHistory(t *testing.T) {
 
 func TestBashLoop(t *testing.T) {
 	c := spawnBash()
+	c.allowInteractivity = false
 
 	c.read(promptType)
 	c.send("echo flupp\n")

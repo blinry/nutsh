@@ -9,6 +9,7 @@ type CLI struct {
 	tokens chan token
 	runes  chan rune
 	input  chan string
+	allowInteractivity bool
 }
 
 // Spawn starts a new instance of the target.
@@ -23,7 +24,7 @@ func Spawn(target string) CLI {
 	input := make(chan string)
 	state := outputState
 
-	c := CLI{tokens, runes, input}
+	c := CLI{tokens, runes, input, true}
 
 	go startProcess(t.spawnCmd, stdin, stdout)
 	go tokenize(stdout, tokens, runes, &state)
@@ -57,7 +58,9 @@ func (c CLI) ReadCommand() string {
 func (c CLI) Query(cmd string) string {
 	c.read(promptType)
 	c.send(cmd)
+	c.allowInteractivity = false
 	o := c.ReadOutput()
+	c.allowInteractivity = true
 	return o
 }
 
@@ -74,7 +77,9 @@ func (c CLI) read(k tokenType) string {
 				return t.string
 			}
 		case r := <-c.runes:
-			fmt.Printf(string(r))
+			if c.allowInteractivity {
+				fmt.Printf(string(r))
+			}
 		}
 	}
 }
