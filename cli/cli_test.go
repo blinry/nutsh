@@ -2,7 +2,7 @@ package cli
 
 import (
 	"testing"
-	"time"
+	//"time"
 )
 
 func spawnBash() CLI {
@@ -28,8 +28,15 @@ func TestBashQueries(t *testing.T) {
 	b := spawnBash()
 
 	queryTest(t, b, "echo hi\n", "hi\r\n")
-	time.Sleep(time.Millisecond)
 	queryTest(t, b, "echo $((1+1))\n", "2\r\n")
+}
+
+func TestBashStressQueries(t *testing.T) {
+	b := spawnBash()
+
+	for i := 0; i<100; i++ {
+		queryTest(t, b, "echo hi\n", "hi\r\n")
+	}
 }
 
 func TestBashTabCompletion(t *testing.T) {
@@ -46,7 +53,6 @@ func TestBashEditing(t *testing.T) {
 func TestBashHistory(t *testing.T) {
 	b := spawnBash()
 	queryTest(t, b, "echo rememberme\n", "rememberme\r\n")
-	time.Sleep(time.Millisecond)
 	queryTest(t, b, "OA\n", "rememberme\r\n")
 }
 
@@ -56,8 +62,8 @@ func TestBashLoop(t *testing.T) {
 
 	c.read(promptType)
 	c.send("echo flupp\n")
-	cmd := c.read(commandType)
-	equalTest(t, cmd, "echo flupp")
+	cmd := c.read(finalCommandType)
+	equalTest(t, cmd, "echo flupp\n")
 	output := c.read(outputType)
 	equalTest(t, output, "flupp\r\n")
 }
@@ -72,3 +78,9 @@ func TestRubyQueries(t *testing.T) {
 
 	queryTest(t, b, "1+1\n", "2\r\n")
 }
+
+func TestBashMultiLine(t *testing.T) {
+	c := spawnBash()
+	queryTest(t, c, "echo \"multi\nline\"\n", "multi\r\nline\r\n")
+}
+

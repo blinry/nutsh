@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	c := cli.Spawn(cli.BashTarget())
+	c := cli.Spawn("bash")
 
 	for {
 		cmd := c.ReadCommand()

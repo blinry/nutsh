@@ -50,8 +50,28 @@ func (c CLI) WasInteractive() bool {
 
 // ReadCommand waits for the next command token and returns it.
 func (c CLI) ReadCommand() string {
+	command := ""
+
 	fmt.Print(c.read(promptType))
-	return c.read(commandType)
+	for {
+		select {
+		case t := <-c.tokens:
+			switch t.tokenType {
+			case promptType:
+				fmt.Print("\r\n")
+				fmt.Print(t.string)
+			case partialCommandType:
+				command += t.string
+			case finalCommandType:
+				command += t.string
+				return command
+			}
+		case r := <-c.runes:
+			if c.allowInteractivity {
+				fmt.Printf(string(r))
+			}
+		}
+	}
 }
 
 // Query executes cmd and returns the output.
@@ -72,7 +92,6 @@ func (c CLI) read(k tokenType) string {
 	for {
 		select {
 		case t := <-c.tokens:
-			//fmt.Printf("token %v: %q\n", t.tokenType, t.string)
 			if t.tokenType == k {
 				return t.string
 			}
