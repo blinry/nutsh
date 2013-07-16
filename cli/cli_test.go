@@ -52,6 +52,7 @@ func TestBashTabCompletion(t *testing.T) {
 func TestBashEditing(t *testing.T) {
 	b := spawnBash()
 	queryTest(t, b, "echo notthisfuhi\n", "hi\r\n")
+	queryTest(t, b, "echo worldODODODODODhello \n", "hello world\r\n")
 }
 
 func TestBashHistory(t *testing.T) {
