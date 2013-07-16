@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// CLI represents an command line interface instance.
 type CLI struct {
 	tokens chan token
 	runes  chan rune
