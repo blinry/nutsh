@@ -47,6 +47,7 @@ func TestBashTabCompletion(t *testing.T) {
 	b := spawnBash()
 
 	queryTest(t, b, "echo /t\t\n", "/tmp/\r\n")
+	//queryTest(t, b, "echo /usr/\t\ti\t\n", "/usr/include/\r\n")
 }
 
 func TestBashEditing(t *testing.T) {
@@ -112,6 +113,8 @@ func TestBashInteractiveAPI(t *testing.T) {
 	_, i := c.ReadOutput()
 	equalTest(t, i, true)
 }
+
+
 
 func TestRubyQueries(t *testing.T) {
 	b := spawnRuby()
