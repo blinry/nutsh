@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 	"morr.cc/nutsh.git/cli"
 	"morr.cc/nutsh.git/tutorial"
 )
 
+var c cli.CLI
+
 func main() {
-	c := cli.Spawn("bash")
+	c = cli.Spawn("bash")
 	var (
 		cmd, output string
 		wasInteractive bool
@@ -26,26 +29,34 @@ func main() {
 		cmd = c.ReadCommand()
 		output, wasInteractive = c.ReadOutput()
 		if (! wasInteractive) {
-			fmt.Print(output)
+			if regexp.MustCompile("^rm").MatchString(cmd) && !queryTrue("test -f $ROOT/datei") {
+				tutorial.Say("blitz!")
+				fmt.Print(output)
+			} else if regexp.MustCompile("^echo").MatchString(cmd) {
+				tutorial.Say("hall:")
+				fmt.Print(output)
+				tutorial.Say("hall aus")
+			} else {
+				fmt.Print(output)
+			}
 		}
 
-		output = c.Query("pwd")
-		if ! regexp.MustCompile("/tmp/nutsh").MatchString(output) {
+		if regexp.MustCompile("(help|hilfe)").MatchString(cmd) {
+			tutorial.Say("To move a file, use `mv`. Look at the manual to learn more.")
+		}
+
+		if !queryMatch("pwd", "/tmp/nutsh") {
 			tutorial.Say("stay here!")
 			c.Query("cd $ROOT")
 		}
 
-		output = c.Query("test -d $ROOT/ziel && echo exists || echo nope")
-		if regexp.MustCompile("nope").MatchString(output) {
+		if !queryTrue("test -d $ROOT/ziel") {
 			tutorial.Say("have a new dir")
 			c.Query("mkdir $ROOT/ziel")
 		}
 
-		output = c.Query("test $(cat $ROOT/datei) = secret && echo ok")
-		origExists := regexp.MustCompile("ok").MatchString(output)
-
-		output = c.Query("test $(cat $ROOT/ziel/datei) = secret && echo ok")
-		targetExists := regexp.MustCompile("ok").MatchString(output)
+		origExists := queryTrue("test $(cat $ROOT/datei) = secret")
+		targetExists := queryTrue("test $(cat $ROOT/ziel/datei) = secret")
 
 		if targetExists {
 			if origExists {
@@ -140,4 +151,20 @@ func main() {
 
 		fmt.Printf("[32m\n    the output was: %q\n\n[0m", output)
 	}
+}
+
+func queryMatch(query string, expression string) bool {
+	output := c.Query(query)
+	return regexp.MustCompile(expression).MatchString(output)
+}
+
+func queryReturn(query string) int {
+	c.Query(query)
+	output := c.Query("echo $?")
+	value, _ := strconv.Atoi(output[0:len(output)-2])
+	return value
+}
+
+func queryTrue(query string) bool {
+	return queryReturn(query) == 0
 }
