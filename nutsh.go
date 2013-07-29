@@ -14,14 +14,53 @@ func main() {
 		wasInteractive bool
 	)
 
-	c.Query("mkdir /tmp/nutsh\n")
-	c.Query("cd /tmp/nutsh\n")
+	c.Query("rm -rf /tmp/nutsh")
+	c.Query("mkdir /tmp/nutsh")
+	c.Query("cd /tmp/nutsh")
+	c.Query("mkdir ziel")
+	c.Query("echo secret > datei")
+	c.Query("ROOT=/tmp/nutsh")
 
+	tutorial.Say("Verschiebe `datei` in `ziel/`.")
 	for {
 		cmd = c.ReadCommand()
 		output, wasInteractive = c.ReadOutput()
 		if (! wasInteractive) {
 			fmt.Print(output)
+		}
+
+		output = c.Query("pwd")
+		if ! regexp.MustCompile("/tmp/nutsh").MatchString(output) {
+			tutorial.Say("stay here!")
+			c.Query("cd $ROOT")
+		}
+
+		output = c.Query("test -d $ROOT/ziel && echo exists || echo nope")
+		if regexp.MustCompile("nope").MatchString(output) {
+			tutorial.Say("have a new dir")
+			c.Query("mkdir $ROOT/ziel")
+		}
+
+		output = c.Query("test $(cat $ROOT/datei) = secret && echo ok")
+		origExists := regexp.MustCompile("ok").MatchString(output)
+
+		output = c.Query("test $(cat $ROOT/ziel/datei) = secret && echo ok")
+		targetExists := regexp.MustCompile("ok").MatchString(output)
+
+		if targetExists {
+			if origExists {
+				tutorial.Say("orig still exists. remove.")
+			} else {
+				tutorial.Say("well done.")
+				break
+			}
+		} else {
+			if origExists {
+				// nothing changed
+			} else {
+				tutorial.Say("have a new one.")
+				c.Query("echo secret > $ROOT/datei")
+			}
 		}
 	}
 
