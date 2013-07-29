@@ -31,35 +31,35 @@ func queryTest(t *testing.T, c CLI, command string, output string) {
 func TestBashQueries(t *testing.T) {
 	b := spawnBash()
 
-	queryTest(t, b, "echo hi\n", "hi\r\n")
-	queryTest(t, b, "echo $((1+1))\n", "2\r\n")
+	queryTest(t, b, "echo hi", "hi\r\n")
+	queryTest(t, b, "echo $((1+1))", "2\r\n")
 }
 
 func TestBashStressQueries(t *testing.T) {
 	b := spawnBash()
 
 	for i := 0; i<100; i++ {
-		queryTest(t, b, "echo hi\n", "hi\r\n")
+		queryTest(t, b, "echo hi", "hi\r\n")
 	}
 }
 
 func TestBashTabCompletion(t *testing.T) {
 	b := spawnBash()
 
-	queryTest(t, b, "echo /t\t\n", "/tmp/\r\n")
-	//queryTest(t, b, "echo /usr/\t\ti\t\n", "/usr/include/\r\n")
+	queryTest(t, b, "echo /t\t", "/tmp/\r\n")
+	//queryTest(t, b, "echo /usr/\t\ti\t", "/usr/include/\r\n")
 }
 
 func TestBashEditing(t *testing.T) {
 	b := spawnBash()
-	queryTest(t, b, "echo notthisfuhi\n", "hi\r\n")
-	queryTest(t, b, "echo worldODODODODODhello \n", "hello world\r\n")
+	queryTest(t, b, "echo notthisfuhi", "hi\r\n")
+	queryTest(t, b, "echo worldODODODODODhello ", "hello world\r\n")
 }
 
 func TestBashHistory(t *testing.T) {
 	b := spawnBash()
-	queryTest(t, b, "echo rememberme\n", "rememberme\r\n")
-	queryTest(t, b, "OA\n", "rememberme\r\n")
+	queryTest(t, b, "echo rememberme", "rememberme\r\n")
+	queryTest(t, b, "OA", "rememberme\r\n")
 }
 
 func TestBashLoop(t *testing.T) {
@@ -77,12 +77,12 @@ func TestBashLoop(t *testing.T) {
 
 func TestBashEmpty(t *testing.T) {
 	c := spawnBash()
-	queryTest(t, c, "\n", "")
+	queryTest(t, c, "", "")
 }
 
 func TestBashMultiLine(t *testing.T) {
 	c := spawnBash()
-	queryTest(t, c, "echo \"multi\nline\"\n", "multi\r\nline\r\n")
+	queryTest(t, c, "echo \"multi\nline\"", "multi\r\nline\r\n")
 }
 
 func TestBashInteractive(t *testing.T) {
@@ -119,16 +119,16 @@ func TestBashInteractiveAPI(t *testing.T) {
 func TestRubyQueries(t *testing.T) {
 	b := spawnRuby()
 
-	queryTest(t, b, "1+1\n", "2\r\n")
+	queryTest(t, b, "1+1", "2\r\n")
 }
 
 func TestPythonQueries(t *testing.T) {
 	b := spawnPython()
 
-	queryTest(t, b, "1+1\n", "2\r\n")
+	queryTest(t, b, "1+1", "2\r\n")
 }
 
 func TestPythonMultiLine(t *testing.T) {
 	c := spawnPython()
-	queryTest(t, c, "if 1:\n\t42\n\n", "42\r\n")
+	queryTest(t, c, "if 1:\n\t42\n", "42\r\n")
 }

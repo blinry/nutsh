@@ -59,6 +59,7 @@ func (c CLI) ReadCommand() string {
 				command += t.string
 			case finalCommandType:
 				command += t.string
+				fmt.Print("\r\n")
 				return command
 			}
 		case r := <-c.runes:
@@ -73,6 +74,7 @@ func (c CLI) ReadCommand() string {
 func (c CLI) Query(cmd string) string {
 	c.read(promptType)
 	c.send(cmd)
+	c.send("\n")
 	c.allowInteractivity = false
 	o, _ := c.ReadOutput()
 	c.allowInteractivity = true
