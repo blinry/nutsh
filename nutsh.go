@@ -5,79 +5,72 @@ import (
 	"regexp"
 	"strconv"
 	"morr.cc/nutsh.git/cli"
-	"morr.cc/nutsh.git/tutorial"
 )
 
-var c cli.CLI
+var (
+	c cli.CLI
+	cmd, out string
+	wasInteractive bool
+	didOutput bool
+)
 
 func main() {
 	c = cli.Spawn("bash")
-	var (
-		cmd, output string
-		wasInteractive bool
-	)
 
-	c.Query("rm -rf /tmp/nutsh")
-	c.Query("mkdir /tmp/nutsh")
-	c.Query("cd /tmp/nutsh")
-	c.Query("mkdir ziel")
-	c.Query("echo secret > datei")
-	c.Query("ROOT=/tmp/nutsh")
+	execute("rm -rf /tmp/nutsh")
+	execute("mkdir /tmp/nutsh")
+	execute("cd /tmp/nutsh")
+	execute("mkdir ziel")
+	execute("echo secret > datei")
+	execute("ROOT=/tmp/nutsh")
 
-	tutorial.Say("Verschiebe `datei` in `ziel/`.")
-	for {
-		cmd = c.ReadCommand()
-		output, wasInteractive = c.ReadOutput()
-		if (! wasInteractive) {
-			if regexp.MustCompile("^rm").MatchString(cmd) && !queryTrue("test -f $ROOT/datei") {
-				tutorial.Say("blitz!")
-				fmt.Print(output)
-			} else if regexp.MustCompile("^echo").MatchString(cmd) {
-				tutorial.Say("hall:")
-				fmt.Print(output)
-				tutorial.Say("hall aus")
-			} else {
-				fmt.Print(output)
-			}
+	say("Verschiebe `datei` in `ziel/`.")
+	for prompt() {
+		if command("^echo") {
+			say("hall:")
+			output()
+			say("hall aus")
 		}
 
-		if regexp.MustCompile("(help|hilfe)").MatchString(cmd) {
-			tutorial.Say("To move a file, use `mv`. Look at the manual to learn more.")
+		output()
+
+		if command("(help|hilfe)") {
+			say("To move a file, use `mv`. Look at the manual to learn more.")
 		}
 
-		if !queryMatch("pwd", "/tmp/nutsh") {
-			tutorial.Say("stay here!")
-			c.Query("cd $ROOT")
+		if !query("pwd", "/tmp/nutsh") {
+			say("stay here!")
+			execute("cd $ROOT")
 		}
 
-		if !queryTrue("test -d $ROOT/ziel") {
-			tutorial.Say("have a new dir")
-			c.Query("mkdir $ROOT/ziel")
+		if !test("-d $ROOT/ziel") {
+			say("have a new dir")
+			execute("mkdir $ROOT/ziel")
 		}
 
-		origExists := queryTrue("test $(cat $ROOT/datei) = secret")
-		targetExists := queryTrue("test $(cat $ROOT/ziel/datei) = secret")
+		origExists := test("$(cat $ROOT/datei) = secret")
+		targetExists := test("$(cat $ROOT/ziel/datei) = secret")
 
 		if targetExists {
 			if origExists {
-				tutorial.Say("orig still exists. remove.")
+				say("orig still exists. remove.")
 			} else {
-				tutorial.Say("well done.")
+				say("well done.")
 				break
 			}
 		} else {
 			if origExists {
 				// nothing changed
 			} else {
-				tutorial.Say("have a new one.")
-				c.Query("echo secret > $ROOT/datei")
+				say("have a new one.")
+				execute("echo secret > $ROOT/datei")
 			}
 		}
 	}
 
 	/*
 	var name string
-	tutorial.Say("Please tell me your name.")
+	say("Please tell me your name.")
 	for {
 		cmd = c.ReadCommand()
 		output, wasInteractive = c.ReadOutput()
@@ -89,12 +82,12 @@ func main() {
 		m := iam.FindStringSubmatch(output)
 		if m != nil {
 			name = m[1]
-			tutorial.Say(fmt.Sprintf("Hello, %s!", name))
+			say(fmt.Sprintf("Hello, %s!", name))
 			break
 		}
 	}
 
-	tutorial.Say("Now, create an alias `iam` that outputs your name.")
+	say("Now, create an alias `iam` that outputs your name.")
 	for {
 		cmd = c.ReadCommand()
 		output, wasInteractive = c.ReadOutput()
@@ -106,13 +99,13 @@ func main() {
 		iam := regexp.MustCompile(name)
 		m := iam.FindStringSubmatch(output)
 		if m != nil {
-			tutorial.Say("Great.")
+			say("Great.")
 			break
 		}
 	}
 	c.Query("alias iam=\"echo seb\"\n")
 
-	tutorial.Say("Now, use this alias to pipe your name into the file `name`.")
+	say("Now, use this alias to pipe your name into the file `name`.")
 	for {
 		cmd = c.ReadCommand()
 		output, wasInteractive = c.ReadOutput()
@@ -122,26 +115,26 @@ func main() {
 
 		output = c.Query("test -f name && echo exists\n")
 		if regexp.MustCompile("exists").MatchString(output) {
-			tutorial.Say("file exists")
+			say("file exists")
 			output = c.Query("test $(cat name) = $(iam) && echo exists\n")
 			if regexp.MustCompile("exists").MatchString(output) {
-				tutorial.Say("correct content. good.")
+				say("correct content. good.")
 				break
 			}
 		}
 	}
 	*/
 
-	tutorial.Say("End of script, entering a free loop now.")
+	say("End of script, entering a free loop now.")
 	for {
 		cmd = c.ReadCommand()
 		fmt.Printf("[35m\n\n    you entered: %q\n\n[0m", cmd)
 
-		output, wasInteractive = c.ReadOutput()
+		out, wasInteractive = c.ReadOutput()
 
 		if (! wasInteractive) {
 			fmt.Print("[36m    command was non-interactive\n\n[0m")
-			fmt.Print(output)
+			fmt.Print(out)
 		} else {
 			fmt.Print("[36m\n    command was interactive\n[0m")
 		}
@@ -149,11 +142,11 @@ func main() {
 		pwd := c.Query("echo $?\n")
 		fmt.Printf("[36m\n    Command returned %s[0m", pwd)
 
-		fmt.Printf("[32m\n    the output was: %q\n\n[0m", output)
+		fmt.Printf("[32m\n    the output was: %q\n\n[0m", out)
 	}
 }
 
-func queryMatch(query string, expression string) bool {
+func query(query string, expression string) bool {
 	output := c.Query(query)
 	return regexp.MustCompile(expression).MatchString(output)
 }
@@ -165,6 +158,38 @@ func queryReturn(query string) int {
 	return value
 }
 
-func queryTrue(query string) bool {
-	return queryReturn(query) == 0
+func test(expression string) bool {
+	return queryReturn("test "+expression) == 0
+}
+
+func execute(command string) {
+	output := c.Query(command)
+	valuestring := c.Query("echo $?")
+	value, _ := strconv.Atoi(valuestring[0:len(valuestring)-2])
+	if value != 0 {
+		panic(fmt.Sprintf("executing `%s` failed: %s", command, output))
+	}
+}
+
+func say(text string) {
+	text = regexp.MustCompile("`([^`]+)`").ReplaceAllString(text, "[32m$1[36m")
+	fmt.Printf("[36m\n\n    %s\n\n[0m", text)
+}
+
+func command(expression string) bool {
+	return regexp.MustCompile(expression).MatchString(cmd)
+}
+
+func output() {
+	if !wasInteractive && !didOutput {
+		fmt.Print(out)
+		didOutput = true
+	}
+}
+
+func prompt() bool {
+	didOutput = false
+	cmd = c.ReadCommand()
+	out, wasInteractive = c.ReadOutput()
+	return true
 }
