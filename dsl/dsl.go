@@ -28,7 +28,7 @@ func QueryOutput(query string, expression string) bool {
 
 func Say(text string) {
 	text = regexp.MustCompile("`([^`]+)`").ReplaceAllString(text, "[32m$1[36m")
-	fmt.Printf("[36m\n\n    %s\n\n[0m", text)
+	fmt.Printf("[36m\n    %s\n\n[0m", text)
 }
 
 func Command(expression string) bool {
