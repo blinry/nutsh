@@ -56,6 +56,18 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 
 		if r == '☃' {
 			switch *state {
+			case outputState:
+				*state++
+				tokens <- token{outputType, buffer}
+				interactive = false
+                timer.Stop()
+			case promptState:
+				*state = cmdinputState
+				tokens <- token{promptType, buffer}
+			}
+			buffer = ""
+		} else if r == '☀' {
+			switch *state {
 			case cmdinputState:
 				*state++
 				<-input
@@ -92,14 +104,6 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 					interactive = false
 					timer.Reset(500*time.Millisecond)
 				}
-			case outputState:
-				*state++
-				tokens <- token{outputType, buffer}
-				interactive = false
-                timer.Stop()
-			case promptState:
-				*state = cmdinputState
-				tokens <- token{promptType, buffer}
 			}
 			buffer = ""
 		} else {

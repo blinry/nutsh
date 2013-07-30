@@ -47,7 +47,7 @@ func TestBashTabCompletion(t *testing.T) {
 	b := spawnBash()
 
 	queryTest(t, b, "echo /t\t", "/tmp/\r\n")
-	//queryTest(t, b, "echo /usr/\t\ti\t", "/usr/include/\r\n")
+	queryTest(t, b, "echo /usr/\t\ti\t", "/usr/include/\r\n")
 }
 
 func TestBashEditing(t *testing.T) {

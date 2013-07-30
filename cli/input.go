@@ -14,10 +14,10 @@ func filterInput(input <-chan string, stdin chan<- rune, state *tokenizerState) 
 				stdin <- ''
 				stdin <- ' '
 				stdin <- ''
-				stdin <- '☃'
+				stdin <- '☀'
 				stdin <- ''
 				stdin <- ''
-				stdin <- '☃'
+				stdin <- '☀'
 				stdin <- ''
 				stdin <- ''
 			}
