@@ -3,6 +3,8 @@ package dsl
 import (
 	"fmt"
 	"regexp"
+	"os"
+	"os/signal"
 	"morr.cc/nutsh.git/cli"
 )
 
@@ -15,6 +17,16 @@ var (
 
 func Spawn(target string) {
 	cmdline = cli.Spawn(target)
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		for {
+			<-c
+			Say("Press Ctrl-C again to quit.")
+			<-c
+			os.Exit(0)
+		}
+	}()
 }
 
 func Query(query string) string {
@@ -50,5 +62,6 @@ func Prompt() bool {
 	didOutput = false
 	lastCommand = cmdline.ReadCommand()
 	lastOutput, wasInteractive = cmdline.ReadOutput()
+	Output()
 	return true
 }

@@ -5,27 +5,56 @@ import (
 )
 
 func main() {
-	m := Model{}
-	l := Lesson{}
-	s := State{}
+	m := Model{
+		map[string]Lesson{
+			"example": Lesson{
+				map[string]State{
+					"hi": State{
+						Block{
+							[]Statement{
+								Command{OutputCommandType, "Hey! Say `hello`!"},
+							},
+						},
+						Block{
+							[]Statement{
+								IfStatement{CommandIfType, "hello", "",
+									Block{
+										[]Statement{
+											Command{OutputCommandType, "Nice!"},
+											Command{GotoCommandType, "task"},
+										},
+									},
+									Block{},
+								},
+							},
+						},
+					},
 
-	initBlock := Block{}
-	greetCommand := Command{OutputCommandType, "Hi!"}
-	initBlock.Statements = append(initBlock.Statements, greetCommand)
-	
-	loopBlock := Block{}
-	trueBlock := Block{}
-	trueBlock.Statements = append(trueBlock.Statements, greetCommand)
-	ifStatement := IfStatement{CommandIfType, "hello", "", &trueBlock, &Block{}}
-	loopBlock.Statements = append(loopBlock.Statements, ifStatement)
+					"task": State{
+						Block{
+							[]Statement{
+								Command{OutputCommandType, "Now go to `/tmp`."},
+							},
+						},
+						Block{
+							[]Statement{
+								IfStatement{QueryOutputIfType, "pwd", "/tmp",
+									Block{
+										[]Statement{
+											Command{OutputCommandType, "Nice!"},
+											Command{GotoCommandType, "hi"},
+										},
+									},
+									Block{},
+								},
+							},
+						},
+					},
 
-	s.InitBlock = initBlock
-	s.LoopBlock = loopBlock
-
-	l.States = make(map[string]State)
-	l.States["hi"] = s
-	m.Lessons = make(map[string]Lesson)
-	m.Lessons["example"] = l
+				},
+			},
+		},
+	}
 
 	m.Interpret()
 }

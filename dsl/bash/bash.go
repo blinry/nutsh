@@ -14,7 +14,7 @@ func QueryReturn(query string) int {
 }
 
 func Test(expression string) bool {
-	return QueryReturn("test "+expression) == 0
+	return QueryReturn("[[ "+expression+" ]]") == 0
 }
 
 func Execute(command string) {

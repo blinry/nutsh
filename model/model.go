@@ -33,19 +33,20 @@ type CommandType int
 const (
 	ExecuteCommandType CommandType = iota
 	OutputCommandType
+	GotoCommandType
 )
 
 type IfStatement struct {
 	IfType
 	String1 string
 	String2 string
-	TrueBlock *Block
-	FalseBlock *Block
+	TrueBlock Block
+	FalseBlock Block
 }
 
 type IfType int
 const (
-	QueryIfType IfType = iota
+	QueryOutputIfType IfType = iota
 	CommandIfType
 )
 
@@ -57,17 +58,24 @@ func (m *Model) Interpret() {
 		nextState := "hi"
 		for {
 			state := m.Lessons[nextLesson].States[nextState]
-			interpretBlock(&state.InitBlock)
+			interpretBlock(state.InitBlock)
 			for {
 				dsl.Prompt()
 				dsl.Output()
-				interpretBlock(&state.LoopBlock)
+				gotoState := interpretBlock(state.LoopBlock)
+				if gotoState != "" {
+					switch gotoState {
+					default:
+						nextState = gotoState
+					}
+					break
+				}
 			}
 		}
 	}
 }
 
-func interpretBlock(b *Block) {
+func interpretBlock(b Block) string {
 	for _, s := range b.Statements {
 		switch s.(type) {
 		case Command:
@@ -75,17 +83,29 @@ func interpretBlock(b *Block) {
 			switch c.CommandType {
 			case OutputCommandType:
 				dsl.Say(c.String)
+			case GotoCommandType:
+				return c.String
 			}
 		case IfStatement:
 			c := s.(IfStatement)
+			var value bool
 			switch c.IfType {
 			case CommandIfType:
-				if dsl.OutputMatch(c.String1) {
-					interpretBlock(c.TrueBlock)
-				} else {
-					interpretBlock(c.FalseBlock)
-				}
+				value = dsl.OutputMatch(c.String1)
+			case QueryOutputIfType:
+				value = dsl.QueryOutput(c.String1, c.String2)
+			}
+
+			var s string
+			if value {
+				s = interpretBlock(c.TrueBlock)
+			} else {
+				s = interpretBlock(c.FalseBlock)
+			}
+			if s != "" {
+				return s
 			}
 		}
 	}
+	return ""
 }
