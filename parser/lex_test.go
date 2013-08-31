@@ -43,7 +43,7 @@ prompt {
 }
 `}
 
-	lexTest(t, l, IDENTIFIER, "def")
+	lexTest(t, l, DEF, "def")
 	lexTest(t, l, IDENTIFIER, "greet")
 	lexTest(t, l, '(', "(")
 	lexTest(t, l, IDENTIFIER, "name")
@@ -57,9 +57,9 @@ prompt {
 	lexTest(t, l, ')', ")")
 	lexTest(t, l, '}', "}")
 
-	lexTest(t, l, IDENTIFIER, "prompt")
+	lexTest(t, l, PROMPT, "prompt")
 	lexTest(t, l, '{', "{")
-	lexTest(t, l, IDENTIFIER, "if")
+	lexTest(t, l, IF, "if")
 	lexTest(t, l, IDENTIFIER, "command")
 	lexTest(t, l, MATCH, "=~")
 	lexTest(t, l, STRING, `"hi"`)

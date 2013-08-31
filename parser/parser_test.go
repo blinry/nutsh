@@ -2,22 +2,25 @@ package parser
 
 import(
 	"testing"
+	"fmt"
 )
 
-func TestSimpleParse(t *testing.T) {
-	pos = 0
-	first = 0
-	l := lexer{text: `say`}
-	NutshParse(l)
-}
-
 func TestAvancedParse(t *testing.T) {
-	pos = 0
-	first = 0
 	l := lexer{text: `
+say("hi")
+say("fu")
 def greet(name) {
 	say("Hi, "+name)
 }
+
+fufu {
+	prompt {
+		if command =~ "fu" {
+			greet("Seb")
+		}
+	}
+}
 `}
-	NutshParse(l)
+	Parse(l)
+	fmt.Print(lesson)
 }

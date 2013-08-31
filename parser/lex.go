@@ -59,7 +59,16 @@ func (l lexer) Lex(lval *NutshSymType) int {
 			c = l.next()
 		}
 		l.emit(lval)
-		return IDENTIFIER
+		switch lval.val {
+		case "if":
+			return IF
+		case "def":
+			return DEF
+		case "prompt":
+			return PROMPT
+		default:
+			return IDENTIFIER
+		}
     }
 	if c != 0 {
 		l.next()
@@ -69,7 +78,7 @@ func (l lexer) Lex(lval *NutshSymType) int {
 }
 
 func alnum(r rune) bool {
-    return (r >= 'a' && r <= 'z') || r == '_'
+    return (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || r == '_'
 }
 
 func whitespace(r rune) bool {

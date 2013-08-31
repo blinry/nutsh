@@ -9,6 +9,15 @@ type Model struct {
 }
 
 type Lesson struct {
+	statements []TopLevelStatement
+}
+
+/*
+type Model struct {
+	Lessons map[string]Lesson
+}
+
+type Lesson struct {
 	States map[string]State
 }
 
@@ -109,3 +118,4 @@ func interpretBlock(b Block) string {
 	}
 	return ""
 }
+*/
