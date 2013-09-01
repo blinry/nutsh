@@ -62,6 +62,7 @@ line: ifclause { $$ = $1 }
 | prompt { $$ = $1 }
 | state { $$ = $1 }
 | call { $$ = $1 }
+| STRING { $$ = node("call", node("say"), node("stringexpressions", node("string", node($1)))) }
 
 ifclause: IF boolexpression block { $$ = node("if", $2, $3, node("block")) }
 | IF boolexpression block ELSE block { $$ = node("if", $2, $3, $5) }
@@ -74,8 +75,8 @@ identifiers: /* empty */ { $$ = node("identifiers") }
 | IDENTIFIER { $$ = node("identifiers", node("id", node($1))) }
 | identifiers ',' IDENTIFIER { $$ = node("identifiers", append($1.children, node($3))...) }
 
-calls: call { node("calls", $1) }
-| calls ',' call { node("calls", append($1.children, $3)...) }
+calls: call { $$ = node("block", $1) }
+| calls ',' call { $$ = node("block", append($1.children, $3)...) }
 
 call: IDENTIFIER { $$ = node("call", node($1), node("stringexpressions")) }
 | IDENTIFIER '(' stringexpressions ')' { $$ = node("call", node($1), $3) }

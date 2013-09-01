@@ -7,11 +7,12 @@ import (
 
 type scope struct {
 	defs map[string]Node
+	blocks []Node
 }
 
 func Interpret(n Node) {
 	dsl.Spawn("bash")
-	interpret(n, scope{defs: make(map[string]Node)})
+	interpret(n, scope{defs: make(map[string]Node), blocks: make([]Node, 0)})
 }
 
 func interpret(n Node, s scope) string {
@@ -29,6 +30,9 @@ func interpret(n Node, s scope) string {
 		block := n.children[0]
 		for {
 			dsl.Prompt()
+			for _, block := range(s.blocks) {
+				interpret(block, s)
+			}
 			if interpret(block, s) == "break" {
 				break
 			}
@@ -46,6 +50,11 @@ func interpret(n Node, s scope) string {
 				return "break"
 			}
 		}
+	case "state":
+		promptblock := n.children[0]
+		s.blocks = append(s.blocks, promptblock)
+		block := n.children[1]
+		interpret(block, s)
 	case "def":
 		name := n.children[0].typ
 		s.defs[name] = n
