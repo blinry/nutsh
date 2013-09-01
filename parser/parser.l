@@ -35,7 +35,7 @@ func (n Node) String() string {
 	node Node
 }
 
-%token <val> DEF IDENTIFIER LINE LINESEP IF PROMPT STRING AND OR NOT MATCH
+%token <val> DEF IDENTIFIER LINE LINESEP IF PROMPT STRING AND OR NOT MATCH EQ
 %type <node> lesson toplevel_lines toplevel_line line call stringexpressions stringexpression definition arguments identifiers block line lines ifclause prompt state call boolexpression calls
 
 %%
@@ -88,6 +88,7 @@ stringexpression: STRING { $$ = node("string", node($1)) }
 
 boolexpression: call { $$ = $1 }
 | stringexpression MATCH stringexpression { $$ = node("call", node("match"), node("stringexpressions", $1, $3)) }
+| stringexpression EQ stringexpression { $$ = node("call", node("equal"), node("stringexpressions", $1, $3)) }
 | '(' boolexpression ')' { $$ = $2 }
 | NOT boolexpression { $$ = node("not", $2) }
 | boolexpression AND boolexpression { $$ = node("and", $1, $3) }

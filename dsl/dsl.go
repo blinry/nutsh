@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"os"
 	"os/signal"
+	"strings"
 	"morr.cc/nutsh.git/cli"
 )
 
@@ -30,7 +31,7 @@ func Spawn(target string) {
 }
 
 func Query(query string) string {
-	return cmdline.Query(query)
+	return strings.TrimSpace(cmdline.Query(query))
 }
 
 func QueryOutput(query string, expression string) bool {

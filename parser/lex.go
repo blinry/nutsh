@@ -53,8 +53,12 @@ func (l lexer) Lex(lval *NutshSymType) int {
 			c = l.next()
 			l.emit(lval)
 			return MATCH
+		} else if c == '=' {
+			c = l.next()
+			l.emit(lval)
+			return EQ
 		} else {
-			panic("Syntax error: Expected ~ after =.")
+			panic("Syntax error: Expected ~ or = after =.")
 		}
 	case alnum(c):
 		for alnum(c) {
