@@ -28,6 +28,7 @@ func (n Node) String() string {
 	}
 	return r
 }
+%}
 
 %union {
     val string
@@ -75,10 +76,10 @@ identifiers: /* empty */ { $$ = node("identifiers") }
 calls: call { node("calls", $1) }
 | calls ',' call { node("calls", append($1.children, $3)...) }
 
-call: IDENTIFIER { $$ = node("call", node($1)) }
+call: IDENTIFIER { $$ = node("call", node($1), node("stringexpressions")) }
 | IDENTIFIER '(' stringexpressions ')' { $$ = node("call", node($1), $3) }
 
-stringexpressions: stringexpression { $$ = $1 }
+stringexpressions: stringexpression { $$ = node("stringexpressions", $1) }
 | stringexpressions ',' stringexpression { $$ = node("stringexpressions", append($1.children, $3)...) }
 
 stringexpression: STRING { $$ = node("string", node($1)) }
@@ -86,7 +87,7 @@ stringexpression: STRING { $$ = node("string", node($1)) }
 | stringexpression '+' stringexpression { $$ = node("+", $1, $3) }
 
 boolexpression: call { $$ = $1 }
-| stringexpression MATCH stringexpression { $$ = node("match", $1, $3) }
+| stringexpression MATCH stringexpression { $$ = node("call", node("match"), node("stringexpressions", $1, $3)) }
 | '(' boolexpression ')' { $$ = $2 }
 | NOT boolexpression { $$ = node("not", $2) }
 | boolexpression AND boolexpression { $$ = node("and", $1, $3) }
@@ -94,8 +95,9 @@ boolexpression: call { $$ = $1 }
 
 %%
 
-func Parse(l lexer) {
+func Parse(text string) Node {
 	pos = 0
 	first = 0
-	NutshParse(l)
+	NutshParse(lexer{text: text})
+	return lesson
 }

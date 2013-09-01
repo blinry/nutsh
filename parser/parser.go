@@ -32,61 +32,7 @@ func (n Node) String() string {
 	return r
 }
 
-/*
-type Node interface {
-	Execute()
-}
-
-type Block struct {
-	lines []Line
-}
-
-func (b Block) Execute() {
-	for _, line := range(b.lines) {
-		line.Execute()
-	}
-}
-
-type Line struct {
-	message string	
-}
-
-func (l Line) Execute() {
-	println(l.message)
-}
-
-type IfNode struct {
-	condition BoolExpressionNode
-	block BlockNode
-}
-
-func (n IfNode) Execute() {
-	if (n.condition.Execute()) {
-		block.Execute()
-	}
-}
-
-type BoolExpressionNode struct {
-	typ: string
-	child1, child2 BoolExpressioonNode
-}
-
-func (n BoolExpressionNode) Execute() bool {
-	switch n.typ {
-		case "not":
-			return ! n.child1.Execute()
-		case "and":
-			return n.child1.Execute() && n.child2.Execute()
-		case "or":
-			return n.child1.Execute() || n.child2.Execute()
-		case "=~":
-			return n.child1.Execute() // ... match
-	}
-}
-*/
-
-
-//line parser.l:87
+//line parser.l:33
 type NutshSymType struct {
 	yys int
     val string
@@ -124,13 +70,14 @@ const NutshEofCode = 1
 const NutshErrCode = 2
 const NutshMaxDepth = 200
 
-//line parser.l:150
+//line parser.l:96
 
 
-func Parse(l lexer) {
+func Parse(text string) Node {
 	pos = 0
 	first = 0
-	NutshParse(l)
+	NutshParse(lexer{text: text})
+	return lesson
 }
 
 //line yacctab:1
@@ -464,112 +411,112 @@ Nutshdefault:
 	switch Nutshnt {
 
 	case 1:
-		//line parser.l:97
+		//line parser.l:43
 		{ NutshVAL.node = NutshS[Nutshpt-0].node; lesson = NutshVAL.node }
 	case 2:
-		//line parser.l:99
+		//line parser.l:45
 		{ NutshVAL.node = node("def", node(NutshS[Nutshpt-2].val), NutshS[Nutshpt-1].node, NutshS[Nutshpt-0].node) }
 	case 3:
-		//line parser.l:101
+		//line parser.l:47
 		{ NutshVAL.node = node("arguments") }
 	case 4:
-		//line parser.l:102
+		//line parser.l:48
 		{ NutshVAL.node = node("arguments", NutshS[Nutshpt-1].node.children...) }
 	case 5:
-		//line parser.l:104
+		//line parser.l:50
 		{ NutshVAL.node = NutshS[Nutshpt-1].node }
 	case 6:
-		//line parser.l:106
+		//line parser.l:52
 		{ NutshVAL.node = node("block") }
 	case 7:
-		//line parser.l:107
+		//line parser.l:53
 		{ NutshVAL.node = node("block", append(NutshS[Nutshpt-1].node.children, NutshS[Nutshpt-0].node)...) }
 	case 8:
-		//line parser.l:109
+		//line parser.l:55
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 9:
-		//line parser.l:110
+		//line parser.l:56
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 10:
-		//line parser.l:112
+		//line parser.l:58
 		{ NutshVAL.node = node("block") }
 	case 11:
-		//line parser.l:113
+		//line parser.l:59
 		{ NutshVAL.node = node("block", append(NutshS[Nutshpt-1].node.children, NutshS[Nutshpt-0].node)...) }
 	case 12:
-		//line parser.l:115
+		//line parser.l:61
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 13:
-		//line parser.l:116
+		//line parser.l:62
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 14:
-		//line parser.l:117
+		//line parser.l:63
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 15:
-		//line parser.l:118
+		//line parser.l:64
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 16:
-		//line parser.l:120
+		//line parser.l:66
 		{ NutshVAL.node = node("if", NutshS[Nutshpt-1].node, NutshS[Nutshpt-0].node) }
 	case 17:
-		//line parser.l:122
+		//line parser.l:68
 		{ NutshVAL.node = node("prompt", NutshS[Nutshpt-0].node) }
 	case 18:
-		//line parser.l:124
+		//line parser.l:70
 		{ NutshVAL.node = node("state", NutshS[Nutshpt-1].node, NutshS[Nutshpt-0].node) }
 	case 19:
-		//line parser.l:126
+		//line parser.l:72
 		{ NutshVAL.node = node("identifiers") }
 	case 20:
-		//line parser.l:127
+		//line parser.l:73
 		{ NutshVAL.node = node("identifiers", node("id", node(NutshS[Nutshpt-0].val))) }
 	case 21:
-		//line parser.l:128
+		//line parser.l:74
 		{ NutshVAL.node = node("identifiers", append(NutshS[Nutshpt-2].node.children, node(NutshS[Nutshpt-0].val))...) }
 	case 22:
-		//line parser.l:130
+		//line parser.l:76
 		{ node("calls", NutshS[Nutshpt-0].node) }
 	case 23:
-		//line parser.l:131
+		//line parser.l:77
 		{ node("calls", append(NutshS[Nutshpt-2].node.children, NutshS[Nutshpt-0].node)...) }
 	case 24:
-		//line parser.l:133
-		{ NutshVAL.node = node("call", node(NutshS[Nutshpt-0].val)) }
+		//line parser.l:79
+		{ NutshVAL.node = node("call", node(NutshS[Nutshpt-0].val), node("stringexpressions")) }
 	case 25:
-		//line parser.l:134
+		//line parser.l:80
 		{ NutshVAL.node = node("call", node(NutshS[Nutshpt-3].val), NutshS[Nutshpt-1].node) }
 	case 26:
-		//line parser.l:136
-		{ NutshVAL.node = NutshS[Nutshpt-0].node }
+		//line parser.l:82
+		{ NutshVAL.node = node("stringexpressions", NutshS[Nutshpt-0].node) }
 	case 27:
-		//line parser.l:137
+		//line parser.l:83
 		{ NutshVAL.node = node("stringexpressions", append(NutshS[Nutshpt-2].node.children, NutshS[Nutshpt-0].node)...) }
 	case 28:
-		//line parser.l:139
+		//line parser.l:85
 		{ NutshVAL.node = node("string", node(NutshS[Nutshpt-0].val)) }
 	case 29:
-		//line parser.l:140
+		//line parser.l:86
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 30:
-		//line parser.l:141
+		//line parser.l:87
 		{ NutshVAL.node = node("+", NutshS[Nutshpt-2].node, NutshS[Nutshpt-0].node) }
 	case 31:
-		//line parser.l:143
+		//line parser.l:89
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 32:
-		//line parser.l:144
-		{ NutshVAL.node = node("match", NutshS[Nutshpt-2].node, NutshS[Nutshpt-0].node) }
+		//line parser.l:90
+		{ NutshVAL.node = node("call", node("match"), node("stringexpressions", NutshS[Nutshpt-2].node, NutshS[Nutshpt-0].node)) }
 	case 33:
-		//line parser.l:145
+		//line parser.l:91
 		{ NutshVAL.node = NutshS[Nutshpt-1].node }
 	case 34:
-		//line parser.l:146
+		//line parser.l:92
 		{ NutshVAL.node = node("not", NutshS[Nutshpt-0].node) }
 	case 35:
-		//line parser.l:147
+		//line parser.l:93
 		{ NutshVAL.node = node("and", NutshS[Nutshpt-2].node, NutshS[Nutshpt-0].node) }
 	case 36:
-		//line parser.l:148
+		//line parser.l:94
 		{ NutshVAL.node = node("or", NutshS[Nutshpt-2].node, NutshS[Nutshpt-0].node) }
 	}
 	goto Nutshstack /* stack new state and value */

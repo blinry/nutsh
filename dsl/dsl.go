@@ -43,6 +43,14 @@ func Say(text string) {
 	fmt.Printf("[36m\n    %s\n\n[0m", text)
 }
 
+func LastCommand() string {
+	return lastCommand
+}
+
+func LastOutput() string {
+	return lastOutput
+}
+
 func Command(expression string) bool {
 	return regexp.MustCompile(expression).MatchString(lastCommand)
 }

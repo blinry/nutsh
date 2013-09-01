@@ -1,10 +1,20 @@
 package main
 
 import (
-	"morr.cc/nutsh.git/interpreter"
+	"fmt"
+	"morr.cc/nutsh.git/parser"
 )
 
 func main() {
-	i := interpreter.Create()
-	i.Run()
+	text := `
+prompt {
+	if output =~ "help" {
+		say("Sehr lustig, "+command)
+		break
+	}
+}
+`
+	l := parser.Parse(text)
+	fmt.Println(l)
+	parser.Interpret(l)
 }

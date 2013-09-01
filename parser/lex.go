@@ -38,12 +38,14 @@ func (l lexer) Lex(lval *NutshSymType) int {
 		l.skip()
 		goto start
 	case c == '"':
+		l.skip()
 		c = l.next()
 		for c != '"' {
 			c = l.next()
 		}
-		l.next()
 		l.emit(lval)
+		l.next()
+		l.skip()
 		return STRING
 	case c == '=':
 		c = l.next()
