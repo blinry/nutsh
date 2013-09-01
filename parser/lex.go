@@ -72,6 +72,8 @@ func (l lexer) Lex(lval *NutshSymType) int {
 			return DEF
 		case "prompt":
 			return PROMPT
+		case "else":
+			return ELSE
 		default:
 			return IDENTIFIER
 		}
