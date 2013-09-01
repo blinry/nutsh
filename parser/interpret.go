@@ -89,12 +89,14 @@ func interpret(n Node, s scope) string {
 			return dsl.Query(evaluated_arguments[0])
 		case "break":
 			return "break"
+		case "return":
+			return evaluated_arguments[0]
 		default:
 			def, ok := s.defs[method]
 			if ok {
 				for i, arg := range(def.children[1].children) {
 					name := arg.children[0].typ
-					s.defs[name] = node("def", node(name), node("arguments"), node("block", node("return", node("string", node(evaluated_arguments[i])))))
+					s.defs[name] = node("def", node(name), node("arguments"), node("block", node("call", node("return"), node("stringexpressions", node("string", node(evaluated_arguments[i]))))))
 
 				}
 				block := def.children[2]
@@ -103,14 +105,30 @@ func interpret(n Node, s scope) string {
 				panic("Cannot find method '"+method+"'.")
 			}
 		}
-	case "return":
-		return interpret(n.children[0], s)
 	case "+":
 		return interpret(n.children[0], s)+interpret(n.children[1], s)
 	case "string":
 		return n.children[0].typ
+	case "and":
+		return bool2str(str2bool(interpret(n.children[0], s)) && str2bool(interpret(n.children[1], s)))
+	case "or":
+		return bool2str(str2bool(interpret(n.children[0], s)) || str2bool(interpret(n.children[1], s)))
+	case "not":
+		return bool2str(! str2bool(interpret(n.children[0], s)))
 	default:
 		panic("I don't know how to interpret a '"+n.typ+"' node.")
 	}
 	return "whatever"
+}
+
+func str2bool(s string) bool {
+	return s != ""
+}
+
+func bool2str(b bool) string {
+	if b {
+		return "true"
+	} else {
+		return ""
+	}
 }

@@ -41,15 +41,16 @@ func QueryOutput(query string, expression string) bool {
 
 func Say(text string) {
 	text = regexp.MustCompile("`([^`]+)`").ReplaceAllString(text, "[32m$1[36m")
+	text = regexp.MustCompile("\\s+").ReplaceAllString(text, " ")
 	fmt.Printf("[36m\n    %s\n\n[0m", text)
 }
 
 func LastCommand() string {
-	return lastCommand
+	return strings.TrimSpace(lastCommand)
 }
 
 func LastOutput() string {
-	return lastOutput
+	return strings.TrimSpace(lastOutput)
 }
 
 func Command(expression string) bool {

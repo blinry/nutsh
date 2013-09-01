@@ -36,7 +36,7 @@ func (n Node) String() string {
 }
 
 %token <val> DEF IDENTIFIER LINE LINESEP IF ELSE PROMPT STRING AND OR NOT MATCH EQ
-%type <node> lesson toplevel_lines toplevel_line line call stringexpressions stringexpression definition arguments identifiers block line lines ifclause prompt state call boolexpression calls
+%type <node> lesson toplevel_lines toplevel_line line call stringexpressions stringexpression definition arguments identifiers block line lines ifclause prompt state call calls
 
 %%
 
@@ -64,8 +64,8 @@ line: ifclause { $$ = $1 }
 | call { $$ = $1 }
 | STRING { $$ = node("call", node("say"), node("stringexpressions", node("string", node($1)))) }
 
-ifclause: IF boolexpression block { $$ = node("if", $2, $3, node("block")) }
-| IF boolexpression block ELSE block { $$ = node("if", $2, $3, $5) }
+ifclause: IF stringexpression block { $$ = node("if", $2, $3, node("block")) }
+| IF stringexpression block ELSE block { $$ = node("if", $2, $3, $5) }
 
 prompt: PROMPT block { $$ = node("prompt", $2) }
 
@@ -87,14 +87,12 @@ stringexpressions: stringexpression { $$ = node("stringexpressions", $1) }
 stringexpression: STRING { $$ = node("string", node($1)) }
 | call { $$ = $1 }
 | stringexpression '+' stringexpression { $$ = node("+", $1, $3) }
-
-boolexpression: call { $$ = $1 }
 | stringexpression MATCH stringexpression { $$ = node("call", node("match"), node("stringexpressions", $1, $3)) }
 | stringexpression EQ stringexpression { $$ = node("call", node("equal"), node("stringexpressions", $1, $3)) }
-| '(' boolexpression ')' { $$ = $2 }
-| NOT boolexpression { $$ = node("not", $2) }
-| boolexpression AND boolexpression { $$ = node("and", $1, $3) }
-| boolexpression OR boolexpression { $$ = node("or", $1, $3) }
+| '(' stringexpression ')' { $$ = $2 }
+| NOT stringexpression { $$ = node("not", $2) }
+| stringexpression AND stringexpression { $$ = node("and", $1, $3) }
+| stringexpression OR stringexpression { $$ = node("or", $1, $3) }
 
 %%
 

@@ -50,6 +50,34 @@ func (l lexer) Lex(lval *NutshSymType) int {
 		l.next()
 		l.skip()
 		return STRING
+	case c == '/':
+		print("!")
+		c = l.next()
+		if c == '/' {
+			c = l.next()
+			for c != '\r' && c != '\n' {
+				c = l.next()
+			}
+			l.skip()
+			goto start
+		} else if c == '*' {
+			c = l.next()
+			in_comment:
+			for c != '*' {
+				c = l.next()
+			}
+			c = l.next()
+			if c != '/' {
+				c = l.next()
+				goto in_comment
+			}
+			c = l.next()
+			l.skip()
+			goto start
+		} else {
+			panic("Syntax error: Expected / or * after /.")
+		}
+
 	case c == '=':
 		c = l.next()
 		if c == '~' {
@@ -63,6 +91,28 @@ func (l lexer) Lex(lval *NutshSymType) int {
 		} else {
 			panic("Syntax error: Expected ~ or = after =.")
 		}
+	case c == '&':
+		c = l.next()
+		if c == '&' {
+			c = l.next()
+			l.emit(lval)
+			return AND
+		} else {
+			panic("Syntax error: Expected & after &.")
+		}
+	case c == '|':
+		c = l.next()
+		if c == '|' {
+			c = l.next()
+			l.emit(lval)
+			return OR
+		} else {
+			panic("Syntax error: Expected | after |.")
+		}
+	case c == '!':
+		c = l.next()
+		l.emit(lval)
+		return NOT
 	case alnum(c):
 		for alnum(c) {
 			c = l.next()
