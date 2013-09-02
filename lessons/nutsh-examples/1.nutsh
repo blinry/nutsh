@@ -1,0 +1,7 @@
+// Ausgabe von Text:
+say("Dies ist erklärender Text")
+
+"Dies ist die Kurzform"
+
+// Ausführen von Befehlen:
+run("echo testinhalt > /tmp/testdatei")

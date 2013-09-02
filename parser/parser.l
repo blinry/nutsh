@@ -4,6 +4,7 @@ package parser
 
 import (
 	"strings"
+	"strconv"
 )
 
 var lesson Node
@@ -36,7 +37,7 @@ func (n Node) String() string {
 }
 
 %token <val> DEF IDENTIFIER LINE LINESEP IF ELSE PROMPT STRING AND OR NOT MATCH EQ
-%type <node> lesson toplevel_lines toplevel_line line call stringexpressions stringexpression definition arguments identifiers block line lines ifclause prompt state call calls
+%type <node> lesson toplevel_lines toplevel_line line call stringexpressions stringexpression definition arguments identifiers block line lines ifclause prompt state call calls string
 
 %%
 
@@ -62,7 +63,7 @@ line: ifclause { $$ = $1 }
 | prompt { $$ = $1 }
 | state { $$ = $1 }
 | call { $$ = $1 }
-| STRING { $$ = node("call", node("say"), node("stringexpressions", node("string", node($1)))) }
+| string { $$ = node("call", node("say"), node("stringexpressions", $1)) }
 
 ifclause: IF stringexpression block { $$ = node("if", $2, $3, node("block")) }
 | IF stringexpression block ELSE block { $$ = node("if", $2, $3, $5) }
@@ -84,7 +85,7 @@ call: IDENTIFIER { $$ = node("call", node($1), node("stringexpressions")) }
 stringexpressions: stringexpression { $$ = node("stringexpressions", $1) }
 | stringexpressions ',' stringexpression { $$ = node("stringexpressions", append($1.children, $3)...) }
 
-stringexpression: STRING { $$ = node("string", node($1)) }
+stringexpression: string { $$ = $1 }
 | call { $$ = $1 }
 | stringexpression '+' stringexpression { $$ = node("+", $1, $3) }
 | stringexpression MATCH stringexpression { $$ = node("call", node("match"), node("stringexpressions", $1, $3)) }
@@ -93,6 +94,8 @@ stringexpression: STRING { $$ = node("string", node($1)) }
 | NOT stringexpression { $$ = node("not", $2) }
 | stringexpression AND stringexpression { $$ = node("and", $1, $3) }
 | stringexpression OR stringexpression { $$ = node("or", $1, $3) }
+
+string: STRING { println($1); s, _ := strconv.Unquote(strings.Replace($1, "\n", " ", -1)); $$ = node("string", node(s)) }
 
 %%
 

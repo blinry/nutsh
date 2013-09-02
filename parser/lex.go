@@ -38,20 +38,21 @@ func (l lexer) Lex(lval *NutshSymType) int {
 		l.skip()
 		goto start
 	case c == '"':
-		l.skip()
+		//l.skip()
 		c = l.next()
 		for c != '"' {
 			if c == '\\' {
-				l.next()
+				c = l.next()
+				if c != '"' && c != '\\' {
+					panic("Syntax error: Expected \" or \\ after \\.")
+				}
 			}
 			c = l.next()
 		}
-		l.emit(lval)
 		l.next()
-		l.skip()
+		l.emit(lval)
 		return STRING
 	case c == '/':
-		print("!")
 		c = l.next()
 		if c == '/' {
 			c = l.next()

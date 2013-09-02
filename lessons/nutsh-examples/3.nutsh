@@ -1,0 +1,13 @@
+// Funktions-Definition:
+def exit_status {
+    return(run("echo $?"))
+}
+
+def say_twice(text) {
+    say(text)
+    say(text)
+}
+
+prompt {
+    say_twice("Der Rückgabewert war '"+exit_status+"'")
+}

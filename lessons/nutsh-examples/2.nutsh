@@ -1,0 +1,11 @@
+// Prompt-Schleife:
+prompt {
+    say("Der Befehl war '"+command+"'")
+    say("Die Ausgabe war '"+output+"'")
+
+    if command =~ "^rm" {
+        break
+    }
+}
+
+"Ende."

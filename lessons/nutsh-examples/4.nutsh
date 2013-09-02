@@ -1,0 +1,14 @@
+def help {
+    if command =~ "help" {
+        "Don't panic!"
+    }
+}
+
+// Umgebender Zustand:
+help {
+    prompt {
+        if command =~ "panic" {
+            break
+        }
+    }
+}
