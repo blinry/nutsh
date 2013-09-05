@@ -128,19 +128,6 @@ func TestBashInteractiveAPI(t *testing.T) {
 }
 
 
-func TestBashInteractiveAPI(t *testing.T) {
-	c := spawnBash()
-	c.read(promptType)
-	c.send("vim\n")
-	go func() {
-		<-time.After(500*time.Millisecond)
-		c.send(":q\n")
-	}()
-	_, i := c.ReadOutput()
-	equalTest(t, i, true)
-}
-
-
 func TestRubyQueries(t *testing.T) {
 	b := spawnRuby()
 

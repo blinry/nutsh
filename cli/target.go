@@ -15,8 +15,8 @@ var targets = map[string]target{
 		spawnCmd: "bash --norc -i",
 		initCmd: `export HISTCONTROL=ignorespace
 alias ls="ls --color=auto"
-export PS2="$(echo -e "\u2605")> \e[0m$(echo -e "\u2603")"
-export PS1="$(echo -e "\u2603")\e[34m\e[1m\w $ \e[0m$(echo -e "\u2603")"
+export PS2="$(echo -e "\xe2\x98\x85")> \e[0m$(echo -e "\xe2\x98\x83")"
+export PS1="$(echo -e "\xe2\x98\x83")\e[34m\e[1m\w $ \e[0m$(echo -e "\xe2\x98\x83")"
 `,
 	},
 	"ruby": target{
