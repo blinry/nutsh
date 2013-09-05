@@ -13,7 +13,8 @@ type target struct {
 var targets = map[string]target{
 	"bash": target{
 		spawnCmd: "bash --norc -i",
-		initCmd: `alias ls="ls --color=auto"
+		initCmd: `export HISTCONTROL=ignorespace
+alias ls="ls --color=auto"
 export PS2="$(echo -e "\u2605")> \e[0m$(echo -e "\u2603")"
 export PS1="$(echo -e "\u2603")\e[34m\e[1m\w $ \e[0m$(echo -e "\u2603")"
 `,

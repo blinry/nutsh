@@ -18,6 +18,7 @@ var (
 
 func Spawn(target string) {
 	cmdline = cli.Spawn(target)
+
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt)
 	go func() {
@@ -31,7 +32,7 @@ func Spawn(target string) {
 }
 
 func Query(query string) string {
-	return strings.TrimSpace(cmdline.Query(query))
+	return strings.TrimSpace(cmdline.Query(" "+query))
 }
 
 func QueryOutput(query string, expression string) bool {

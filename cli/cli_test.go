@@ -62,6 +62,19 @@ func TestBashHistory(t *testing.T) {
 	queryTest(t, b, "OA", "rememberme\r\n")
 }
 
+/*
+func TestBashSkipQuery(t *testing.T) {
+	b := spawnBash()
+	b.send("echo hi\n")
+	b.Query("echo something else\n")
+	b.send("OA\n")
+
+	equalTest(t, 
+	queryTest(t, b, "echo rememberme", "rememberme\r\n")
+	queryTest(t, b, "OA", "rememberme\r\n")
+}
+*/
+
 func TestBashLoop(t *testing.T) {
 	c := spawnBash()
 	c.allowInteractivity = false
@@ -114,6 +127,18 @@ func TestBashInteractiveAPI(t *testing.T) {
 	equalTest(t, i, true)
 }
 
+
+func TestBashInteractiveAPI(t *testing.T) {
+	c := spawnBash()
+	c.read(promptType)
+	c.send("vim\n")
+	go func() {
+		<-time.After(500*time.Millisecond)
+		c.send(":q\n")
+	}()
+	_, i := c.ReadOutput()
+	equalTest(t, i, true)
+}
 
 
 func TestRubyQueries(t *testing.T) {
