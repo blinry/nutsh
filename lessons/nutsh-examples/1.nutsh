@@ -5,3 +5,5 @@ say("Dies ist erklärender Text")
 
 // Ausführen von Befehlen:
 run("echo testinhalt > /tmp/testdatei")
+
+say("2 + 2 = "+run("echo $(( 2 + 2 ))"))

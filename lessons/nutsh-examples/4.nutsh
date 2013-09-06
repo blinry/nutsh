@@ -11,4 +11,9 @@ help {
             break
         }
     }
+    prompt {
+        if command =~ "panic" {
+            break
+        }
+    }
 }
