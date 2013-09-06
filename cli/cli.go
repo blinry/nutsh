@@ -81,6 +81,10 @@ func (c CLI) Query(cmd string) string {
 	return o
 }
 
+func (c CLI) Interrupt() {
+	c.send("")
+}
+
 func (c CLI) send(s string) {
 	c.input <- s
 }

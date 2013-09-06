@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"time"
 	"morr.cc/nutsh.git/cli"
 )
 
@@ -24,9 +25,14 @@ func Spawn(target string) {
 	go func() {
 		for {
 			<-c
-			Say("Press Ctrl-C again to quit.")
-			<-c
-			os.Exit(0)
+			cmdline.Interrupt()
+			select {
+			case <-time.After(time.Second):
+				break
+			case <-c:
+				cmdline.Interrupt()
+				Say("Enter `exit` to quit the Nut Shell.")
+			}
 		}
 	}()
 }
