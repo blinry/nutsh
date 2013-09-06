@@ -78,6 +78,7 @@ func (c CLI) Query(cmd string) string {
 	c.allowInteractivity = false
 	o, _ := c.ReadOutput()
 	c.allowInteractivity = true
+
 	return o
 }
 

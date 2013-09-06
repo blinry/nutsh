@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"strconv"
 	"time"
 	"morr.cc/nutsh.git/cli"
 )
@@ -80,5 +81,12 @@ func Prompt() bool {
 	lastCommand = cmdline.ReadCommand()
 	lastOutput, wasInteractive = cmdline.ReadOutput()
 	Output()
+
+	rows, columns := getsize()
+	println(rows)
+	println(columns)
+	cmdline.Query("stty rows "+strconv.Itoa(rows))
+	cmdline.Query("stty columns "+strconv.Itoa(columns))
+
 	return true
 }
