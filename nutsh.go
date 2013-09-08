@@ -1,21 +1,31 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 	"os"
 	"io/ioutil"
 	"morr.cc/nutsh.git/parser"
 )
 
 func main() {
-	file := os.Args[1]
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: nutsh (run|test) <lesson file>")
+	}
+
+	command := os.Args[1]
+	file := os.Args[2]
+
 	text, _ := ioutil.ReadFile(file)
+	l := parser.Parse(string(text))
 
 	//println(string(text))
 
-	l := parser.Parse(string(text))
+	switch command {
+	case "run":
+		parser.Interpret(l)
+	case "test":
+		parser.Test(l)
+	}
 
 	//fmt.Println(l)
-
-	parser.Interpret(l)
 }

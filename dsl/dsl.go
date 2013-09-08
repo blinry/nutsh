@@ -42,6 +42,13 @@ func Query(query string) string {
 	return strings.TrimSpace(cmdline.Query(" "+query))
 }
 
+func SimulatePrompt(query string) {
+	lastCommand = query
+	fmt.Println("$ "+query)
+	lastOutput = cmdline.Query(query)
+	fmt.Print(lastOutput)
+}
+
 func QueryOutput(query string, expression string) bool {
 	output := cmdline.Query(query)
 	return regexp.MustCompile(expression).MatchString(output)

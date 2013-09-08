@@ -8,14 +8,21 @@ import (
 type scope struct {
 	defs map[string]Node
 	blocks []Node
+	test bool
+	current_expect string
 }
 
 func Interpret(n Node) {
 	dsl.Spawn("bash")
-	interpret(n, scope{defs: make(map[string]Node), blocks: make([]Node, 0)})
+	interpret(n, &scope{defs: make(map[string]Node), blocks: make([]Node, 0), test: false})
 }
 
-func interpret(n Node, s scope) string {
+func InterpretTest(n Node) {
+	dsl.Spawn("bash")
+	interpret(n, &scope{defs: make(map[string]Node), blocks: make([]Node, 0), test: true})
+}
+
+func interpret(n Node, s *scope) string {
 	switch n.typ {
 	case "block":
 		var v string
@@ -28,13 +35,32 @@ func interpret(n Node, s scope) string {
 		return v
 	case "prompt":
 		block := n.children[0]
+		expects := node("expects")
+		if len(n.children) > 1 {
+			expects = n.children[1]
+		}
 		for {
-			dsl.Prompt()
+			if s.test {
+				if len(expects.children) > 0 {
+					expect := expects.children[0].children[0].typ
+					s.current_expect = expect
+					dsl.SimulatePrompt(expect)
+				} else {
+					panic("No expect in prompt")
+				}
+			} else {
+				dsl.Prompt()
+			}
 			for _, block := range(s.blocks) {
 				interpret(block, s)
 			}
 			if interpret(block, s) == "break" {
 				break
+			}
+			if s.test {
+				if s.current_expect != "" {
+					panic("Expect was not reached: "+s.current_expect)
+				}
 			}
 		}
 	case "if":
@@ -91,6 +117,11 @@ func interpret(n Node, s scope) string {
 			return "break"
 		case "return":
 			return evaluated_arguments[0]
+		case "expect":
+			if evaluated_arguments[0] == s.current_expect {
+				s.current_expect = ""
+			}
+			return ""
 		default:
 			def, ok := s.defs[method]
 			if ok {

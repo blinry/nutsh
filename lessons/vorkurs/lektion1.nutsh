@@ -1,2 +1,5 @@
 "Willkommen in der Nut Shell. In dieser ersten Lektion möchte ich dich mit den
 Befehlen `ls` und `cd` vertraut machen."
+
+prompt {
+}
