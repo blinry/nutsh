@@ -71,36 +71,36 @@ func main() {
 	}
 
 	/*
-	Say("Now, create an alias `iam` that outputs your name.")
-	for Prompt() {
-		output = c.Query("iam\n")
-		iam := regexp.MustCompile(name)
-		m := iam.FindStringSubmatch(output)
-		if m != nil {
-			Say("Great.")
-			break
-		}
-	}
-	c.Query("alias iam=\"echo seb\"\n")
-
-	Say("Now, use this alias to pipe your name into the file `name`.")
-	for {
-		cmd = c.ReadCommand()
-		output, wasInteractive = c.ReadOutput()
-		if (! wasInteractive) {
-			fmt.Print(output)
-		}
-
-		output = c.Query("test -f name && echo exists\n")
-		if regexp.MustCompile("exists").MatchString(output) {
-			Say("file exists")
-			output = c.Query("test $(cat name) = $(iam) && echo exists\n")
-			if regexp.MustCompile("exists").MatchString(output) {
-				Say("correct content. good.")
+		Say("Now, create an alias `iam` that outputs your name.")
+		for Prompt() {
+			output = c.Query("iam\n")
+			iam := regexp.MustCompile(name)
+			m := iam.FindStringSubmatch(output)
+			if m != nil {
+				Say("Great.")
 				break
 			}
 		}
-	}
+		c.Query("alias iam=\"echo seb\"\n")
+
+		Say("Now, use this alias to pipe your name into the file `name`.")
+		for {
+			cmd = c.ReadCommand()
+			output, wasInteractive = c.ReadOutput()
+			if (! wasInteractive) {
+				fmt.Print(output)
+			}
+
+			output = c.Query("test -f name && echo exists\n")
+			if regexp.MustCompile("exists").MatchString(output) {
+				Say("file exists")
+				output = c.Query("test $(cat name) = $(iam) && echo exists\n")
+				if regexp.MustCompile("exists").MatchString(output) {
+					Say("correct content. good.")
+					break
+				}
+			}
+		}
 	*/
 
 	Say("End of script, entering a free loop now.")

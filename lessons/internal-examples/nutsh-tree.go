@@ -38,7 +38,7 @@ func main() {
 		} else if lsIn("/usr") {
 			Say("Hier ist Kram")
 			rm("\\/usr")
-		} else if Command("^ls") && ! lsIn("/") {
+		} else if Command("^ls") && !lsIn("/") {
 			Say("Hierüber weiß ich nichts")
 		}
 		if Command("help") {
@@ -58,7 +58,7 @@ func lsIn(dir string) bool {
 }
 
 func rm(dir string) {
-	bash.Execute("declare -a DIRS=( ${DIRS[@]/"+dir+"/} )")
+	bash.Execute("declare -a DIRS=( ${DIRS[@]/" + dir + "/} )")
 }
 
 func prompt() bool {
@@ -74,10 +74,10 @@ func prompt() bool {
 }
 
 func stayin(dir string) {
-	if bash.Test("! $(pwd) =~ ^"+dir) {
-		Say("Wir sind hier noch nicht fertig! Bitte komm zurück nach `"+dir+"`")
+	if bash.Test("! $(pwd) =~ ^" + dir) {
+		Say("Wir sind hier noch nicht fertig! Bitte komm zurück nach `" + dir + "`")
 		for prompt() {
-			if bash.Test("$(pwd) =~ ^"+dir) {
+			if bash.Test("$(pwd) =~ ^" + dir) {
 				break
 			}
 		}

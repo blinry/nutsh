@@ -6,10 +6,10 @@ import (
 )
 
 type window_size struct {
-    row    uint16
-    col    uint16
-    xpixel uint16
-    ypixel uint16
+	row    uint16
+	col    uint16
+	xpixel uint16
+	ypixel uint16
 }
 
 func getsize() (int, int) {
@@ -21,6 +21,6 @@ func getsize() (int, int) {
 	)
 	if int(res) == -1 {
 		panic("fuck")
-	}	
+	}
 	return int(w.row), int(w.col)
 }

@@ -8,8 +8,8 @@ import (
 )
 
 type Tutorial struct {
-	Name string
-	Target string
+	Name    string
+	Target  string
 	Version int
 	Basedir string
 	Lessons map[string]Lesson
@@ -20,16 +20,16 @@ type Lesson struct {
 }
 
 func Init(dir string) Tutorial {
-	info, _ := ioutil.ReadFile(dir+"/info.yaml")
+	info, _ := ioutil.ReadFile(dir + "/info.yaml")
 	var tut Tutorial
 	goyaml.Unmarshal(info, &tut)
 	tut.Basedir = dir
 	tut.Lessons = make(map[string]Lesson)
 
 	files, _ := ioutil.ReadDir(dir)
-	for _, file := range(files) {
+	for _, file := range files {
 		if file.Name()[len(file.Name())-6:len(file.Name())] == ".nutsh" {
-			content, _ := ioutil.ReadFile(dir+"/"+file.Name())
+			content, _ := ioutil.ReadFile(dir + "/" + file.Name())
 			rootnode := parser.Parse(string(content))
 			tut.Lessons[file.Name()[0:len(file.Name())-6]] = Lesson{rootnode}
 		}
@@ -47,8 +47,8 @@ func (t Tutorial) SelectLesson() Lesson {
 		i += 1
 	}
 
-	sel:= 0
-	tryagain:
+	sel := 0
+tryagain:
 	fmt.Print("Bitte wählen Sie eine Lektion: ")
 	_, err := fmt.Scanf("%d", &sel)
 	if err != nil {

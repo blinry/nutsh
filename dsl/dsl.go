@@ -2,21 +2,21 @@ package dsl
 
 import (
 	"fmt"
-	"regexp"
+	"morr.cc/nutsh.git/cli"
 	"os"
 	"os/exec"
 	"os/signal"
-	"strings"
+	"regexp"
 	"strconv"
+	"strings"
 	"time"
-	"morr.cc/nutsh.git/cli"
 )
 
 var (
-	cmdline cli.CLI
+	cmdline                 cli.CLI
 	lastCommand, lastOutput string
-	wasInteractive bool
-	didOutput bool
+	wasInteractive          bool
+	didOutput               bool
 )
 
 func Spawn(target string) {
@@ -40,12 +40,12 @@ func Spawn(target string) {
 }
 
 func Query(query string) string {
-	return strings.TrimSpace(cmdline.Query(" "+query))
+	return strings.TrimSpace(cmdline.Query(" " + query))
 }
 
 func SimulatePrompt(query string) {
 	lastCommand = query
-	fmt.Println("$ "+query)
+	fmt.Println("$ " + query)
 	lastOutput = cmdline.Query(query)
 	fmt.Print(lastOutput)
 }
@@ -95,8 +95,8 @@ func Prompt() bool {
 	rows, columns := getsize()
 	println(rows)
 	println(columns)
-	cmdline.Query("stty rows "+strconv.Itoa(rows))
-	cmdline.Query("stty columns "+strconv.Itoa(columns))
+	cmdline.Query("stty rows " + strconv.Itoa(rows))
+	cmdline.Query("stty columns " + strconv.Itoa(columns))
 
 	return true
 }

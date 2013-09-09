@@ -13,7 +13,7 @@ func main() {
 	bash.Execute("cd /tmp/nutsh")
 	bash.Execute("ROOT=$(pwd)")
 
-	decide:
+decide:
 	Say("Yes or no?")
 	for Prompt() {
 		Output()
@@ -25,7 +25,7 @@ func main() {
 		}
 	}
 
-	yes:
+yes:
 	Say("You sure?")
 	for Prompt() {
 		Output()
@@ -38,7 +38,7 @@ func main() {
 		}
 	}
 
-	no:
+no:
 	Say("Or rather yes?")
 	for Prompt() {
 		Output()
@@ -69,7 +69,6 @@ func main() {
 
 	Say("(explanation, moving back)")
 	bash.Execute("cd ..")
-
 
 	Say("Add a file, do a commit")
 	for Prompt() {

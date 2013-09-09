@@ -1,8 +1,8 @@
 package parser
 
 type lexer struct {
-    text string
-    pos int
+	text string
+	pos  int
 }
 
 var first int
@@ -19,7 +19,7 @@ func (l lexer) next() rune {
 }
 
 func (l lexer) emit(lval *NutshSymType) {
-	lval.val = string([]rune(l.text)[first:pos-1])
+	lval.val = string([]rune(l.text)[first : pos-1])
 	pos -= 1
 	first = pos
 }
@@ -31,7 +31,7 @@ func (l lexer) skip() {
 func (l lexer) Lex(lval *NutshSymType) int {
 	var c rune
 
-	start:
+start:
 	c = l.next()
 	switch {
 	case whitespace(c):
@@ -63,7 +63,7 @@ func (l lexer) Lex(lval *NutshSymType) int {
 			goto start
 		} else if c == '*' {
 			c = l.next()
-			in_comment:
+		in_comment:
 			for c != '*' {
 				c = l.next()
 			}
@@ -131,16 +131,16 @@ func (l lexer) Lex(lval *NutshSymType) int {
 		default:
 			return IDENTIFIER
 		}
-    }
+	}
 	if c != 0 {
 		l.next()
 		l.emit(lval)
 	}
-    return int(c)
+	return int(c)
 }
 
 func alnum(r rune) bool {
-    return (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == '_'
+	return (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == '_'
 }
 
 func whitespace(r rune) bool {
@@ -148,5 +148,5 @@ func whitespace(r rune) bool {
 }
 
 func (l lexer) Error(e string) {
-    panic(e)
+	panic(e)
 }

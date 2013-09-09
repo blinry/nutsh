@@ -2,30 +2,30 @@ package main
 
 import (
 	"fmt"
+	"morr.cc/nutsh.git/cli"
 	"regexp"
 	"strconv"
-	"morr.cc/nutsh.git/cli"
 )
 
 var (
-	c cli.CLI
-	cmd, out string
+	c              cli.CLI
+	cmd, out       string
 	wasInteractive bool
-	didOutput bool
+	didOutput      bool
 )
 
 func main() {
 	c = cli.Spawn("ruby")
 
 	/*
-	say("assign 42*23 to the variable x")
-	for prompt() {
-		if query("x", "966") {
-			say("good")
-			break
+		say("assign 42*23 to the variable x")
+		for prompt() {
+			if query("x", "966") {
+				say("good")
+				break
+			}
+			output()
 		}
-		output()
-	}
 	*/
 
 	say("Write a method `sort` that takes an array of integers as a parameter and returns it sorted. Demonstrate it's use with an example.")
@@ -56,7 +56,7 @@ func query(query string, expression string) bool {
 func queryReturn(query string) int {
 	c.Query(query)
 	output := c.Query("echo $?")
-	value, _ := strconv.Atoi(output[0:len(output)-2])
+	value, _ := strconv.Atoi(output[0 : len(output)-2])
 	return value
 }
 
@@ -67,7 +67,7 @@ func test(expression string) bool {
 func execute(command string) {
 	output := c.Query(command)
 	valuestring := c.Query("echo $?")
-	value, _ := strconv.Atoi(valuestring[0:len(valuestring)-2])
+	value, _ := strconv.Atoi(valuestring[0 : len(valuestring)-2])
 	if value != 0 {
 		panic(fmt.Sprintf("executing `%s` failed: %s", command, output))
 	}

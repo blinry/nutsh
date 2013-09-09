@@ -38,7 +38,7 @@ func TestBashQueries(t *testing.T) {
 func TestBashStressQueries(t *testing.T) {
 	b := spawnBash()
 
-	for i := 0; i<100; i++ {
+	for i := 0; i < 100; i++ {
 		queryTest(t, b, "echo hi", "hi\r\n")
 	}
 }
@@ -69,7 +69,7 @@ func TestBashSkipQuery(t *testing.T) {
 	b.Query("echo something else\n")
 	b.send("OA\n")
 
-	equalTest(t, 
+	equalTest(t,
 	queryTest(t, b, "echo rememberme", "rememberme\r\n")
 	queryTest(t, b, "OA", "rememberme\r\n")
 }
@@ -109,7 +109,7 @@ func TestBashInteractive(t *testing.T) {
 			return
 		case <-c.tokens:
 			// avoid blocking
-		case <-time.After(1*time.Second):
+		case <-time.After(1 * time.Second):
 			t.Fatal("No interactivity after 1 second")
 		}
 	}
@@ -120,13 +120,12 @@ func TestBashInteractiveAPI(t *testing.T) {
 	c.read(promptType)
 	c.send("vim\n")
 	go func() {
-		<-time.After(500*time.Millisecond)
+		<-time.After(500 * time.Millisecond)
 		c.send(":q\n")
 	}()
 	_, i := c.ReadOutput()
 	equalTest(t, i, true)
 }
-
 
 func TestRubyQueries(t *testing.T) {
 	b := spawnRuby()

@@ -6,9 +6,9 @@ import (
 
 // CLI represents an command line interface instance.
 type CLI struct {
-	tokens chan token
-	runes  chan rune
-	input  chan string
+	tokens             chan token
+	runes              chan rune
+	input              chan string
 	allowInteractivity bool
 }
 

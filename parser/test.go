@@ -14,7 +14,7 @@ func Test(n Node) {
 
 func annotate(n *Node) []Node {
 	expects := make([]Node, 0)
-	for i := range(n.children) {
+	for i := range n.children {
 		c := &n.children[i]
 		if c.typ == "prompt" {
 			e := collect_expects(*c)
@@ -29,7 +29,7 @@ func annotate(n *Node) []Node {
 
 func collect_expects(n Node) []Node {
 	expects := make([]Node, 0)
-	for _, c := range(n.children) {
+	for _, c := range n.children {
 		if c.typ == "call" {
 			if c.children[0].typ == "expect" {
 				expects = append(expects, c.children[1].children...)

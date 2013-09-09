@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 	//"io/ioutil"
-	"morr.cc/nutsh.git/parser"
 	"morr.cc/nutsh.git/model"
+	"morr.cc/nutsh.git/parser"
 )
 
 func main() {
@@ -32,18 +32,18 @@ func main() {
 	}
 
 	/*
-	text, _ := ioutil.ReadFile(file)
-	l := parser.Parse(string(text))
+		text, _ := ioutil.ReadFile(file)
+		l := parser.Parse(string(text))
 
-	//println(string(text))
+		//println(string(text))
 
-	switch command {
-	case "run":
-		parser.Interpret(l)
-	case "test":
-		parser.Test(l)
-	}
+		switch command {
+		case "run":
+			parser.Interpret(l)
+		case "test":
+			parser.Test(l)
+		}
 
-	//fmt.Println(l)
+		//fmt.Println(l)
 	*/
 }

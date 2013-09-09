@@ -6,9 +6,9 @@ import (
 )
 
 type scope struct {
-	defs map[string]Node
-	blocks []Node
-	test bool
+	defs           map[string]Node
+	blocks         []Node
+	test           bool
 	current_expect string
 }
 
@@ -26,7 +26,7 @@ func interpret(n Node, s *scope) string {
 	switch n.typ {
 	case "block":
 		var v string
-		for _, node := range(n.children) {
+		for _, node := range n.children {
 			v = interpret(node, s)
 			if v == "break" {
 				return "break"
@@ -51,7 +51,7 @@ func interpret(n Node, s *scope) string {
 			} else {
 				dsl.Prompt()
 			}
-			for _, block := range(s.blocks) {
+			for _, block := range s.blocks {
 				interpret(block, s)
 			}
 			if interpret(block, s) == "break" {
@@ -59,7 +59,7 @@ func interpret(n Node, s *scope) string {
 			}
 			if s.test {
 				if s.current_expect != "" {
-					panic("Expect was not reached: "+s.current_expect)
+					panic("Expect was not reached: " + s.current_expect)
 				}
 			}
 		}
@@ -88,7 +88,7 @@ func interpret(n Node, s *scope) string {
 		method := n.children[0].typ
 		arguments := n.children[1]
 		evaluated_arguments := make([]string, 0)
-		for _, arg := range(arguments.children) {
+		for _, arg := range arguments.children {
 			evaluated_arguments = append(evaluated_arguments, interpret(arg, s))
 		}
 
@@ -125,7 +125,7 @@ func interpret(n Node, s *scope) string {
 		default:
 			def, ok := s.defs[method]
 			if ok {
-				for i, arg := range(def.children[1].children) {
+				for i, arg := range def.children[1].children {
 					name := arg.children[0].typ
 					s.defs[name] = node("def", node(name), node("arguments"), node("block", node("call", node("return"), node("stringexpressions", node("string", node(evaluated_arguments[i]))))))
 
@@ -133,11 +133,11 @@ func interpret(n Node, s *scope) string {
 				block := def.children[2]
 				return interpret(block, s)
 			} else {
-				panic("Cannot find method '"+method+"'.")
+				panic("Cannot find method '" + method + "'.")
 			}
 		}
 	case "+":
-		return interpret(n.children[0], s)+interpret(n.children[1], s)
+		return interpret(n.children[0], s) + interpret(n.children[1], s)
 	case "string":
 		return n.children[0].typ
 	case "and":
@@ -145,9 +145,9 @@ func interpret(n Node, s *scope) string {
 	case "or":
 		return bool2str(str2bool(interpret(n.children[0], s)) || str2bool(interpret(n.children[1], s)))
 	case "not":
-		return bool2str(! str2bool(interpret(n.children[0], s)))
+		return bool2str(!str2bool(interpret(n.children[0], s)))
 	default:
-		panic("I don't know how to interpret a '"+n.typ+"' node.")
+		panic("I don't know how to interpret a '" + n.typ + "' node.")
 	}
 	return "whatever"
 }
