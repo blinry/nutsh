@@ -3,18 +3,35 @@ package main
 import (
 	"fmt"
 	"os"
-	"io/ioutil"
+	//"io/ioutil"
 	"morr.cc/nutsh.git/parser"
+	"morr.cc/nutsh.git/model"
 )
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: nutsh (run|test) <lesson file>")
+		fmt.Println("Usage: nutsh (run|test) <tutorial dir>")
 	}
 
 	command := os.Args[1]
-	file := os.Args[2]
+	dir := os.Args[2]
 
+	tut := model.Init(dir)
+
+	switch command {
+	case "run":
+		for {
+			l := tut.SelectLesson()
+			parser.Interpret(l.Root)
+		}
+	case "test":
+		for _, l := range tut.Lessons {
+			fmt.Println(l)
+			//parser.test(l)
+		}
+	}
+
+	/*
 	text, _ := ioutil.ReadFile(file)
 	l := parser.Parse(string(text))
 
@@ -28,4 +45,5 @@ func main() {
 	}
 
 	//fmt.Println(l)
+	*/
 }

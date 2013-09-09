@@ -1,121 +1,62 @@
 package model
 
 import (
-	"morr.cc/nutsh.git/dsl"
+	"fmt"
+	"io/ioutil"
+	"launchpad.net/goyaml"
+	"morr.cc/nutsh.git/parser"
 )
 
-type Model struct {
+type Tutorial struct {
+	Name string
+	Target string
+	Version int
+	Basedir string
 	Lessons map[string]Lesson
 }
 
 type Lesson struct {
-	statements []TopLevelStatement
+	Root parser.Node
 }
 
-/*
-type Model struct {
-	Lessons map[string]Lesson
-}
+func Init(dir string) Tutorial {
+	info, _ := ioutil.ReadFile(dir+"/info.yaml")
+	var tut Tutorial
+	goyaml.Unmarshal(info, &tut)
+	tut.Basedir = dir
+	tut.Lessons = make(map[string]Lesson)
 
-type Lesson struct {
-	States map[string]State
-}
-
-type State struct {
-	InitBlock Block;
-	LoopBlock Block;
-}
-
-type Block struct {
-	Statements []Statement
-}
-
-type Statement interface {
-}
-
-type Command struct {
-	CommandType
-	String string
-}
-
-type CommandType int
-const (
-	ExecuteCommandType CommandType = iota
-	OutputCommandType
-	GotoCommandType
-)
-
-type IfStatement struct {
-	IfType
-	String1 string
-	String2 string
-	TrueBlock Block
-	FalseBlock Block
-}
-
-type IfType int
-const (
-	QueryOutputIfType IfType = iota
-	CommandIfType
-)
-
-func (m *Model) Interpret() {
-	dsl.Spawn("bash")
-
-	nextLesson := "example"
-	for {
-		nextState := "hi"
-		for {
-			state := m.Lessons[nextLesson].States[nextState]
-			interpretBlock(state.InitBlock)
-			for {
-				dsl.Prompt()
-				dsl.Output()
-				gotoState := interpretBlock(state.LoopBlock)
-				if gotoState != "" {
-					switch gotoState {
-					default:
-						nextState = gotoState
-					}
-					break
-				}
-			}
+	files, _ := ioutil.ReadDir(dir)
+	for _, file := range(files) {
+		if file.Name()[len(file.Name())-6:len(file.Name())] == ".nutsh" {
+			content, _ := ioutil.ReadFile(dir+"/"+file.Name())
+			rootnode := parser.Parse(string(content))
+			tut.Lessons[file.Name()[0:len(file.Name())-6]] = Lesson{rootnode}
 		}
 	}
+
+	return tut
 }
 
-func interpretBlock(b Block) string {
-	for _, s := range b.Statements {
-		switch s.(type) {
-		case Command:
-			c := s.(Command)
-			switch c.CommandType {
-			case OutputCommandType:
-				dsl.Say(c.String)
-			case GotoCommandType:
-				return c.String
-			}
-		case IfStatement:
-			c := s.(IfStatement)
-			var value bool
-			switch c.IfType {
-			case CommandIfType:
-				value = dsl.OutputMatch(c.String1)
-			case QueryOutputIfType:
-				value = dsl.QueryOutput(c.String1, c.String2)
-			}
-
-			var s string
-			if value {
-				s = interpretBlock(c.TrueBlock)
-			} else {
-				s = interpretBlock(c.FalseBlock)
-			}
-			if s != "" {
-				return s
-			}
-		}
+func (t Tutorial) SelectLesson() Lesson {
+	i := 0
+	lessons := make([]Lesson, 0)
+	for name, l := range t.Lessons {
+		fmt.Printf("%d: %s\n", i, name)
+		lessons = append(lessons, l)
+		i += 1
 	}
-	return ""
+
+	sel:= 0
+	tryagain:
+	fmt.Print("Bitte wählen Sie eine Lektion: ")
+	_, err := fmt.Scanf("%d", &sel)
+	if err != nil {
+		goto tryagain
+	}
+
+	if sel < 0 || sel > len(lessons)-1 {
+		goto tryagain
+	}
+	return lessons[sel]
 }
-*/

@@ -7,10 +7,6 @@ import (
 	"os/exec"
 )
 
-func init() {
-	exec.Command("stty", "-F", "/dev/tty", "-echo", "-icanon", "min", "1").Run()
-}
-
 func Quit() {
 	exec.Command("stty", "-F", "/dev/tty", "echo").Run()
 	os.Exit(0)

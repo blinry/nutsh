@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 	"os"
+	"os/exec"
 	"os/signal"
 	"strings"
 	"strconv"
@@ -85,7 +86,9 @@ func Output() {
 
 func Prompt() bool {
 	didOutput = false
+	exec.Command("stty", "-F", "/dev/tty", "-echo", "-icanon", "min", "1").Run()
 	lastCommand = cmdline.ReadCommand()
+	exec.Command("stty", "-F", "/dev/tty", "echo").Run()
 	lastOutput, wasInteractive = cmdline.ReadOutput()
 	Output()
 
