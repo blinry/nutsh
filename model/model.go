@@ -28,7 +28,7 @@ func Init(dir string) Tutorial {
 
 	files, _ := ioutil.ReadDir(dir)
 	for _, file := range files {
-		if file.Name()[len(file.Name())-6:len(file.Name())] == ".nutsh" {
+		if len(file.Name()) > 7 && file.Name()[len(file.Name())-6:len(file.Name())] == ".nutsh" {
 			content, _ := ioutil.ReadFile(dir + "/" + file.Name())
 			rootnode := parser.Parse(string(content))
 			tut.Lessons[file.Name()[0:len(file.Name())-6]] = Lesson{rootnode}
