@@ -1,9 +1,0 @@
-// Ausgabe von Text:
-say("Dies ist erklärender Text")
-
-"Dies ist die Kurzform"
-
-// Ausführen von Befehlen:
-run("echo testinhalt > /tmp/testdatei")
-
-say("2 + 2 = "+run("echo $(( 2 + 2 ))"))
