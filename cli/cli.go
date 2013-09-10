@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"errors"
 )
 
 // CLI represents an command line interface instance.
@@ -10,6 +11,7 @@ type CLI struct {
 	runes              chan rune
 	input              chan string
 	allowInteractivity bool
+	state              *tokenizerState	
 }
 
 // Spawn starts a new instance of the target.
@@ -24,11 +26,11 @@ func Spawn(target string) CLI {
 	input := make(chan string)
 	state := outputState
 
-	c := CLI{tokens, runes, input, true}
+	c := CLI{tokens, runes, input, true, &state}
 
 	go startProcess(t.spawnCmd, stdin, stdout)
 	go tokenize(stdout, tokens, runes, &state)
-	go inputStdin(input)
+	go inputStdin(input, &state)
 	go filterInput(input, stdin, &state)
 
 	c.send(t.initCmd)
@@ -43,7 +45,7 @@ func (c CLI) ReadOutput() (string, bool) {
 }
 
 // ReadCommand waits for the next command token and returns it.
-func (c CLI) ReadCommand() string {
+func (c CLI) ReadCommand() (string, error) {
 	command := ""
 
 	prompt, _ := c.read(promptType)
@@ -60,7 +62,9 @@ func (c CLI) ReadCommand() string {
 			case finalCommandType:
 				command += t.string
 				fmt.Print("\r\n")
-				return command
+				return command, nil
+			case endType:
+				return "", errors.New("CLI terminated")
 			}
 		case r := <-c.runes:
 			if c.allowInteractivity {
@@ -106,4 +110,8 @@ func (c CLI) read(k tokenType) (data string, wasInteractive bool) {
 			}
 		}
 	}
+}
+
+func (c CLI) Quit() {
+	*c.state = quitState
 }

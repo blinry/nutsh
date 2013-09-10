@@ -20,13 +20,10 @@ func startProcess(command string, stdin <-chan rune, stdout chan<- rune) {
 
 	go func() {
 		for {
-			r := <-stdin
-			/*rows, cols, err := pty.Getsize(tty)
-			if err != nil {
-				panic(err)
+			r, ok := <-stdin
+			if ! ok {
+				return
 			}
-			print(rows, cols)
-			*/
 			input.Write([]byte(string(r)))
 			tty.Write([]byte(string(r)))
 		}
@@ -37,7 +34,8 @@ func startProcess(command string, stdin <-chan rune, stdout chan<- rune) {
 		for {
 			r, _, err := reader.ReadRune()
 			if err != nil {
-				Quit()
+				close(stdout)
+				return
 			}
 			output.Write([]byte(string(r)))
 			stdout <- r

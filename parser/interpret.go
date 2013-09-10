@@ -3,6 +3,7 @@ package parser
 import (
 	"morr.cc/nutsh.git/dsl"
 	"regexp"
+	"time"
 )
 
 type scope struct {
@@ -12,9 +13,21 @@ type scope struct {
 	current_expect string
 }
 
-func Interpret(n Node) {
+type interrupt struct {
+	typ string
+	value string
+}
+
+func Interpret(n Node) string {
 	dsl.Spawn("bash")
-	interpret(n, &scope{defs: make(map[string]Node), blocks: make([]Node, 0), test: false})
+	_, i := interpret(n, &scope{defs: make(map[string]Node), blocks: make([]Node, 0), test: false})
+	dsl.Quit()
+	time.Sleep(1*time.Second)
+	if i.typ == "lesson" {
+		return i.value
+	} else {
+		return ""
+	}
 }
 
 func InterpretTest(n Node) {
@@ -22,17 +35,18 @@ func InterpretTest(n Node) {
 	interpret(n, &scope{defs: make(map[string]Node), blocks: make([]Node, 0), test: true})
 }
 
-func interpret(n Node, s *scope) string {
+func interpret(n Node, s *scope) (string, interrupt) {
+	i := interrupt{}
 	switch n.typ {
 	case "block":
 		var v string
 		for _, node := range n.children {
-			v = interpret(node, s)
-			if v == "break" {
-				return "break"
+			v, i = interpret(node, s)
+			if i.typ != "" {
+				return "", i
 			}
 		}
-		return v
+		return v, i
 	case "prompt":
 		block := n.children[0]
 		expects := node("expects")
@@ -49,13 +63,23 @@ func interpret(n Node, s *scope) string {
 					panic("No expect in prompt")
 				}
 			} else {
-				dsl.Prompt()
+				if ! dsl.Prompt() {
+					// cli terminated
+					return "", interrupt{"lesson", ""}
+				}
 			}
 			for _, block := range s.blocks {
-				interpret(block, s)
+				_, i := interpret(block, s)
+				if i.typ != "" {
+					return "", i
+				}
 			}
-			if interpret(block, s) == "break" {
+			_, i := interpret(block, s)
+			if i.typ == "break" {
 				break
+			}
+			if i.typ != "" {
+				return "", i
 			}
 			if s.test {
 				if s.current_expect != "" {
@@ -67,20 +91,26 @@ func interpret(n Node, s *scope) string {
 		condition := n.children[0]
 		block := n.children[1]
 		else_block := n.children[2]
-		if interpret(condition, s) == "" {
-			if interpret(else_block, s) == "break" {
-				return "break"
-			}
+		v, i := interpret(condition, s)
+		if i.typ != "" {
+			return "", i
+		}
+		if v == "" {
+			_, i = interpret(else_block, s)
 		} else {
-			if interpret(block, s) == "break" {
-				return "break"
-			}
+			_, i = interpret(block, s)
+		}
+		if i.typ != "" {
+			return "", i
 		}
 	case "state":
 		promptblock := n.children[0]
 		s.blocks = append(s.blocks, promptblock)
 		block := n.children[1]
-		interpret(block, s)
+		_, i := interpret(block, s)
+		if i.typ != "" {
+			return "", i
+		}
 	case "def":
 		name := n.children[0].typ
 		s.defs[name] = n
@@ -89,39 +119,45 @@ func interpret(n Node, s *scope) string {
 		arguments := n.children[1]
 		evaluated_arguments := make([]string, 0)
 		for _, arg := range arguments.children {
-			evaluated_arguments = append(evaluated_arguments, interpret(arg, s))
+			v, i := interpret(arg, s)
+			if i.typ != "" {
+				return "", i
+			}
+			evaluated_arguments = append(evaluated_arguments, v)
 		}
 
 		switch method {
 		case "say":
 			dsl.Say(evaluated_arguments[0])
 		case "command":
-			return dsl.LastCommand()
+			return dsl.LastCommand(), i
 		case "output":
-			return dsl.LastOutput()
+			return dsl.LastOutput(), i
 		case "match":
 			if regexp.MustCompile(evaluated_arguments[1]).MatchString(evaluated_arguments[0]) {
-				return "true"
+				return "true", i
 			} else {
-				return ""
+				return "", i
 			}
 		case "equal":
 			if evaluated_arguments[0] == evaluated_arguments[1] {
-				return "true"
+				return "true", i
 			} else {
-				return ""
+				return "", i
 			}
 		case "run":
-			return dsl.Query(evaluated_arguments[0])
+			return dsl.Query(evaluated_arguments[0]), i
 		case "break":
-			return "break"
+			return "", interrupt{"break", ""}
+		case "lesson":
+			return "", interrupt{"lesson", evaluated_arguments[0]}
 		case "return":
-			return evaluated_arguments[0]
+			return evaluated_arguments[0], i
 		case "expect":
 			if evaluated_arguments[0] == s.current_expect {
 				s.current_expect = ""
 			}
-			return ""
+			return "", i
 		default:
 			def, ok := s.defs[method]
 			if ok {
@@ -131,25 +167,57 @@ func interpret(n Node, s *scope) string {
 
 				}
 				block := def.children[2]
-				return interpret(block, s)
+				v, i := interpret(block, s)
+				if i.typ != "" {
+					return "", i
+				}
+				return v, i
 			} else {
 				panic("Cannot find method '" + method + "'.")
 			}
 		}
 	case "+":
-		return interpret(n.children[0], s) + interpret(n.children[1], s)
+		v1, i := interpret(n.children[0], s)
+		if i.typ != "" {
+			return "", i
+		}
+		v2, i := interpret(n.children[1], s)
+		if i.typ != "" {
+			return "", i
+		}
+		return v1+v2, i
 	case "string":
-		return n.children[0].typ
+		return n.children[0].typ, i
 	case "and":
-		return bool2str(str2bool(interpret(n.children[0], s)) && str2bool(interpret(n.children[1], s)))
+		v1, i := interpret(n.children[0], s)
+		if i.typ != "" {
+			return "", i
+		}
+		v2, i := interpret(n.children[1], s)
+		if i.typ != "" {
+			return "", i
+		}
+		return bool2str(str2bool(v1) && str2bool(v2)), i
 	case "or":
-		return bool2str(str2bool(interpret(n.children[0], s)) || str2bool(interpret(n.children[1], s)))
+		v1, i := interpret(n.children[0], s)
+		if i.typ != "" {
+			return "", i
+		}
+		v2, i := interpret(n.children[1], s)
+		if i.typ != "" {
+			return "", i
+		}
+		return bool2str(str2bool(v1) || str2bool(v2)), i
 	case "not":
-		return bool2str(!str2bool(interpret(n.children[0], s)))
+		v, i := interpret(n.children[0], s)
+		if i.typ != "" {
+			return "", i
+		}
+		return bool2str(!str2bool(v)), i
 	default:
 		panic("I don't know how to interpret a '" + n.typ + "' node.")
 	}
-	return "whatever"
+	return "whatever", i
 }
 
 func str2bool(s string) bool {

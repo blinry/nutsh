@@ -87,7 +87,12 @@ func Output() {
 func Prompt() bool {
 	didOutput = false
 	exec.Command("stty", "-F", "/dev/tty", "-echo", "-icanon", "min", "1").Run()
-	lastCommand = cmdline.ReadCommand()
+	var err error
+	lastCommand, err = cmdline.ReadCommand()
+	if err != nil {
+		// cli terminated
+		return false
+	}
 	exec.Command("stty", "-F", "/dev/tty", "echo").Run()
 	lastOutput, wasInteractive = cmdline.ReadOutput()
 	Output()
@@ -99,4 +104,8 @@ func Prompt() bool {
 	cmdline.Query("stty columns " + strconv.Itoa(columns))
 
 	return true
+}
+
+func Quit() {
+	cmdline.Quit()
 }

@@ -11,6 +11,7 @@ const (
 	promptType
 	partialCommandType
 	finalCommandType
+	endType
 )
 
 type token struct {
@@ -25,6 +26,7 @@ const (
 	cmdechoState
 	outputState
 	promptState
+	quitState
 )
 
 func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *tokenizerState) {
@@ -33,13 +35,18 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 	interactive := false
 	timer := time.NewTimer(0)
 	timer.Stop()
+	quit := make(chan bool)
 
 	go func() {
 		for {
-			<-timer.C
-			interactive = true
-			for _, r := range buffer {
-				runes <- r
+			select {
+			case <- quit:
+				return
+			case <-timer.C:
+				interactive = true
+				for _, r := range buffer {
+					runes <- r
+				}
 			}
 		}
 	}()
@@ -51,7 +58,15 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 			r = queue[0]
 			queue = queue[1:len(queue)]
 		} else {
-			r = <-input
+			var ok bool
+			r, ok = <-input
+			if ! ok {
+				quit <- true
+				tokens <- token{endType, ""}
+				close(tokens)
+				close(runes)
+				return
+			}
 		}
 
 		if r == '☃' {
