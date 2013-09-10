@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 {
+	if len(os.Args) < 3 {
 		fmt.Println("Usage: nutsh (run|test) <tutorial dir> [lesson name]")
 	}
 
@@ -17,7 +17,7 @@ func main() {
 	dir := os.Args[2]
 
 	lesson_name := ""
-	if len(os.Args) > 2 {
+	if len(os.Args) > 3 {
 		lesson_name = os.Args[3]
 	}
 
