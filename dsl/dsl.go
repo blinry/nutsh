@@ -58,7 +58,32 @@ func QueryOutput(query string, expression string) bool {
 func Say(text string) {
 	text = regexp.MustCompile("`([^`]+)`").ReplaceAllString(text, "[32m$1[36m")
 	text = regexp.MustCompile("\\s+").ReplaceAllString(text, " ")
-	fmt.Printf("[36m\n    %s\n\n[0m", text)
+	_, c := getsize()
+	fmt.Printf("[36m\n%s\n\n[0m", indent(wrap(text, c-4), 4))
+}
+
+func wrap(text string, width int) string {
+	ret := ""
+	line_len := 0
+	for _, w := range strings.Split(text, " ") {
+		l := len(w)
+		if line_len + l + 1 > width {
+			ret += "\n"
+			line_len = 0
+		}
+		ret += w+" "
+		line_len += l + 1
+	}
+	return ret
+}
+
+func indent(text string, spaces int) string {
+	iden := ""
+	for i := 0; i < spaces; i++ {
+		iden += " "
+	}
+	text = strings.Replace(text, "\n", "\n"+iden, -1)
+	return iden+text
 }
 
 func LastCommand() string {
