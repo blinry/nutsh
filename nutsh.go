@@ -30,18 +30,24 @@ func main() {
 	case "run":
 		var l model.Lesson
 		var exists bool
-		if lesson_name == "" {
-			l = tut.SelectLesson()
-		} else {
+		var ok bool
+		if lesson_name != "" {
 			l, exists = tut.Lessons[lesson_name]
 			if ! exists {
-				l = tut.SelectLesson()
+				lesson_name = ""
+			}
+		}
+		if lesson_name == "" {
+			l, ok = tut.SelectLesson()
+			if ! ok {
+				break
 			}
 		}
 		for {
 			last_lesson = l
 			lesson_name, done = parser.Interpret(l.Root)
 			if done {
+				println("done")
 				last_lesson.Done = true
 			}
 			println(lesson_name)
@@ -51,7 +57,10 @@ func main() {
 					continue
 				}
 			}
-			l = tut.SelectLesson()
+			l, ok = tut.SelectLesson()
+			if ! ok {
+				break
+			}
 		}
 	case "test":
 		for _, l := range tut.Lessons {

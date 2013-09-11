@@ -39,8 +39,9 @@ func Init(dir string) Tutorial {
 	return tut
 }
 
-func (t Tutorial) SelectLesson() Lesson {
-	i := 0
+func (t Tutorial) SelectLesson() (Lesson, bool) {
+	fmt.Println("0: (Beenden)")
+	i := 1
 	lessons := make([]Lesson, 0)
 	for name, l := range t.Lessons {
 		fmt.Printf("%d: %b ", i, l.Done)
@@ -64,8 +65,14 @@ tryagain:
 		goto tryagain
 	}
 
-	if sel < 0 || sel > len(lessons)-1 {
+
+	if sel < 0 || sel > len(lessons) {
 		goto tryagain
 	}
-	return lessons[sel]
+
+	if sel == 0 {
+		return Lesson{}, false
+	}
+
+	return lessons[sel-1], true
 }
