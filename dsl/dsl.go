@@ -85,6 +85,10 @@ func Output() {
 }
 
 func Prompt() bool {
+	rows, columns := getsize()
+	cmdline.Query(" stty rows " + strconv.Itoa(rows))
+	cmdline.Query(" stty columns " + strconv.Itoa(columns))
+
 	didOutput = false
 	exec.Command("stty", "-F", "/dev/tty", "-echo", "-icanon", "min", "1").Run()
 	var err error
@@ -96,12 +100,6 @@ func Prompt() bool {
 	exec.Command("stty", "-F", "/dev/tty", "echo").Run()
 	lastOutput, wasInteractive = cmdline.ReadOutput()
 	Output()
-
-	rows, columns := getsize()
-	println(rows)
-	println(columns)
-	cmdline.Query("stty rows " + strconv.Itoa(rows))
-	cmdline.Query("stty columns " + strconv.Itoa(columns))
 
 	return true
 }

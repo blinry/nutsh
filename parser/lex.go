@@ -43,9 +43,9 @@ start:
 		for c != '"' {
 			if c == '\\' {
 				c = l.next()
-				if c != '"' && c != '\\' {
+				/*if c != '"' && c != '\\' {
 					panic("Syntax error: Expected \" or \\ after \\.")
-				}
+				}*/
 			}
 			c = l.next()
 		}

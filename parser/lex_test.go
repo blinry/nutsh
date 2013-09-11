@@ -37,7 +37,7 @@ def greet(name) {
 }
 
 prompt {
-	if command =~ "hi" {
+	if command =~ "hi \d" {
 		greet("Seb")
 	}
 }
@@ -62,7 +62,7 @@ prompt {
 	lexTest(t, l, IF, "if")
 	lexTest(t, l, IDENTIFIER, "command")
 	lexTest(t, l, MATCH, "=~")
-	lexTest(t, l, STRING, `"hi"`)
+	lexTest(t, l, STRING, `"hi \d"`)
 	lexTest(t, l, '{', "{")
 	lexTest(t, l, IDENTIFIER, "greet")
 	lexTest(t, l, '(', "(")
