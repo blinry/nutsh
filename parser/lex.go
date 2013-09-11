@@ -52,6 +52,15 @@ start:
 		l.next()
 		l.emit(lval)
 		return STRING
+	case c == '`':
+		//l.skip()
+		c = l.next()
+		for c != '`' {
+			c = l.next()
+		}
+		l.next()
+		l.emit(lval)
+		return STRING
 	case c == '/':
 		c = l.next()
 		if c == '/' {

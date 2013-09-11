@@ -531,7 +531,7 @@ Nutshdefault:
 		{ NutshVAL.node = node("or", NutshS[Nutshpt-2].node, NutshS[Nutshpt-0].node) }
 	case 39:
 		//line parser.l:98
-		{ s, _ := strconv.Unquote(strings.Replace(NutshS[Nutshpt-0].val, "\n", " ", -1)); NutshVAL.node = node("string", node(s)) }
+		{ s := strings.Replace(NutshS[Nutshpt-0].val, "\n", " ", -1); s, _ = strconv.Unquote(s); NutshVAL.node = node("string", node(s)) }
 	}
 	goto Nutshstack /* stack new state and value */
 }

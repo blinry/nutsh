@@ -28,6 +28,14 @@ func TestSimple(t *testing.T) {
 	//lexTest(t, l, 0, "")
 }
 
+func TestString(t *testing.T) {
+	pos = 0
+	first = 0
+	l := lexer{text: "\"Quo\\\"ted\" `Ra\"w`"}
+	lexTest(t, l, STRING, "\"Quo\\\"ted\"")
+	lexTest(t, l, STRING, "`Ra\"w`")
+}
+
 func TestAvanced(t *testing.T) {
 	pos = 0
 	first = 0
