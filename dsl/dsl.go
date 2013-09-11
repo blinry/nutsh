@@ -97,7 +97,7 @@ func Prompt() bool {
 		// cli terminated
 		return false
 	}
-	exec.Command("stty", "-F", "/dev/tty", "echo").Run()
+	exec.Command("stty", "-F", "/dev/tty", "echo", "icanon").Run()
 	lastOutput, wasInteractive = cmdline.ReadOutput()
 	Output()
 

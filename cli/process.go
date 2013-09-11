@@ -4,13 +4,7 @@ import (
 	"bufio"
 	"github.com/kr/pty"
 	"os"
-	"os/exec"
 )
-
-func Quit() {
-	exec.Command("stty", "-F", "/dev/tty", "echo").Run()
-	os.Exit(0)
-}
 
 func startProcess(command string, stdin <-chan rune, stdout chan<- rune) {
 	tty, _ := pty.Start(stringToCmd(command))

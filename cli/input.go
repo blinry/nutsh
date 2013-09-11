@@ -2,7 +2,6 @@ package cli
 
 import (
 	"bufio"
-	"io"
 	"os"
 )
 
@@ -30,18 +29,29 @@ func filterInput(input <-chan string, stdin chan<- rune, state *tokenizerState) 
 	}
 }
 
-func inputStdin(input chan<- string, state *tokenizerState) {
+func runeToString(input <-chan rune, output chan<- string, quit <-chan bool) {
+	outer: for {
+		select {
+		case r, ok := <-input:
+			if ! ok {
+				break outer
+			}
+			output <- string(r)
+		case <-quit:
+			break outer
+		}
+	}
+	close(output)
+}
+
+func readStdin(input chan<- rune) {
 	reader := bufio.NewReader(os.Stdin)
-	for *state != quitState {
+	for {
 		r, _, err := reader.ReadRune()
 		if err != nil {
-			if err == io.EOF {
-				return
-			}
-			panic(err)
+			break
 		}
-		input <- string(r)
+		input <- r
 	}
 	close(input)
-	println("quit")
 }

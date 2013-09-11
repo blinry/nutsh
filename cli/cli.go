@@ -5,13 +5,22 @@ import (
 	"errors"
 )
 
+var (
+	input chan rune
+)
+
+func init() {
+	input = make(chan rune)
+	go readStdin(input)
+}
+
 // CLI represents an command line interface instance.
 type CLI struct {
 	tokens             chan token
 	runes              chan rune
 	input              chan string
 	allowInteractivity bool
-	state              *tokenizerState	
+	quit               chan bool
 }
 
 // Spawn starts a new instance of the target.
@@ -23,15 +32,17 @@ func Spawn(target string) CLI {
 	stdout := make(chan rune)
 	tokens := make(chan token)
 	runes := make(chan rune)
-	input := make(chan string)
+	stringInput := make(chan string)
+	quit := make(chan bool)
+
 	state := outputState
 
-	c := CLI{tokens, runes, input, true, &state}
+	c := CLI{tokens, runes, stringInput, true, quit}
 
 	go startProcess(t.spawnCmd, stdin, stdout)
 	go tokenize(stdout, tokens, runes, &state)
-	go inputStdin(input, &state)
-	go filterInput(input, stdin, &state)
+	go runeToString(input, stringInput, quit)
+	go filterInput(stringInput, stdin, &state)
 
 	c.send(t.initCmd)
 	c.read(outputType)
@@ -113,5 +124,9 @@ func (c CLI) read(k tokenType) (data string, wasInteractive bool) {
 }
 
 func (c CLI) Quit() {
-	*c.state = quitState
+	c.quit <- true
+}
+
+func GetInput() chan rune {
+	return input
 }

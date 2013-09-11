@@ -3,7 +3,7 @@ package parser
 import (
 	"morr.cc/nutsh.git/dsl"
 	"regexp"
-	"time"
+	//"time"
 )
 
 type scope struct {
@@ -22,7 +22,7 @@ func Interpret(n Node) (string, bool) {
 	dsl.Spawn("bash")
 	_, i := interpret(n, &scope{defs: make(map[string]Node), blocks: make([]Node, 0), test: false})
 	dsl.Quit()
-	time.Sleep(1*time.Second)
+	//time.Sleep(1*time.Second)
 
 	if i.typ == "lesson" {
 		return i.value, false

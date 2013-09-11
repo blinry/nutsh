@@ -47,7 +47,6 @@ func main() {
 			last_lesson = l
 			lesson_name, done = parser.Interpret(l.Root)
 			if done {
-				println("done")
 				last_lesson.Done = true
 				tut.SaveProgress()
 			}
