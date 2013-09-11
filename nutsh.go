@@ -17,6 +17,9 @@ func main() {
 	dir := os.Args[2]
 
 	lesson_name := ""
+	var last_lesson model.Lesson
+	done := false
+
 	if len(os.Args) > 3 {
 		lesson_name = os.Args[3]
 	}
@@ -36,7 +39,11 @@ func main() {
 			}
 		}
 		for {
-			lesson_name = parser.Interpret(l.Root)
+			last_lesson = l
+			lesson_name, done = parser.Interpret(l.Root)
+			if done {
+				last_lesson.Done = true
+			}
 			println(lesson_name)
 			if lesson_name != "" {
 				l, exists = tut.Lessons[lesson_name]

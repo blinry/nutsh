@@ -18,15 +18,18 @@ type interrupt struct {
 	value string
 }
 
-func Interpret(n Node) string {
+func Interpret(n Node) (string, bool) {
 	dsl.Spawn("bash")
 	_, i := interpret(n, &scope{defs: make(map[string]Node), blocks: make([]Node, 0), test: false})
 	dsl.Quit()
 	time.Sleep(1*time.Second)
+
 	if i.typ == "lesson" {
-		return i.value
+		return i.value, false
+	} else if i.typ == "done" {
+		return i.value, true
 	} else {
-		return ""
+		return "", false
 	}
 }
 
@@ -151,6 +154,8 @@ func interpret(n Node, s *scope) (string, interrupt) {
 			return "", interrupt{"break", ""}
 		case "lesson":
 			return "", interrupt{"lesson", evaluated_arguments[0]}
+		case "done":
+			return "", interrupt{"done", ""}
 		case "return":
 			return evaluated_arguments[0], i
 		case "expect":

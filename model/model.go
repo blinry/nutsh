@@ -17,6 +17,7 @@ type Tutorial struct {
 
 type Lesson struct {
 	Root parser.Node
+	Done bool
 }
 
 func Init(dir string) Tutorial {
@@ -31,7 +32,7 @@ func Init(dir string) Tutorial {
 		if len(file.Name()) > 7 && file.Name()[len(file.Name())-6:len(file.Name())] == ".nutsh" {
 			content, _ := ioutil.ReadFile(dir + "/" + file.Name())
 			rootnode := parser.Parse(string(content))
-			tut.Lessons[file.Name()[0:len(file.Name())-6]] = Lesson{rootnode}
+			tut.Lessons[file.Name()[0:len(file.Name())-6]] = Lesson{rootnode, false}
 		}
 	}
 
@@ -42,7 +43,15 @@ func (t Tutorial) SelectLesson() Lesson {
 	i := 0
 	lessons := make([]Lesson, 0)
 	for name, l := range t.Lessons {
-		fmt.Printf("%d: %s\n", i, name)
+		fmt.Printf("%d: %b ", i, l.Done)
+		if l.Done {
+			fmt.Print("[30m")
+		}
+		fmt.Print(name)
+		if l.Done {
+			fmt.Print("[0m")
+		}
+		fmt.Println()
 		lessons = append(lessons, l)
 		i += 1
 	}
