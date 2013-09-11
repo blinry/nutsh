@@ -56,12 +56,12 @@ func (t Tutorial) SelectLesson() (*Lesson, bool) {
 	fmt.Printf("== %s ==\n", t.Name)
 	i := 1
 	lessons := make([]*Lesson, 0)
-	for name, l := range t.Lessons {
+	for _, l := range t.Lessons {
 		if l.Done {
 			fmt.Print("[32m")
 		}
 		fmt.Printf("%d) ", i)
-		fmt.Print(name)
+		fmt.Print(l.Name())
 		if l.Done {
 			fmt.Print("[0m")
 		}
@@ -112,4 +112,8 @@ func (t Tutorial) SaveProgress() {
 	f, _ := os.Create(t.Basedir+"/progress.yaml")
 	f.Write(s)
 	f.Close()
+}
+
+func (l Lesson) Name() string {
+	return parser.GetName(l.Root)
 }

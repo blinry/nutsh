@@ -18,6 +18,13 @@ type interrupt struct {
 	value string
 }
 
+func GetName(n Node) string {
+	if n.children[0].children[0].children[0].typ == "lesson_name" {
+		return n.children[0].children[0].children[1].children[0].children[0].typ
+	}
+	return "Unnamed"
+}
+
 func Interpret(n Node) (string, bool) {
 	dsl.Spawn("bash")
 	_, i := interpret(n, &scope{defs: make(map[string]Node), blocks: make([]Node, 0), test: false})
@@ -168,6 +175,8 @@ func interpret(n Node, s *scope) (string, interrupt) {
 			if evaluated_arguments[0] == s.current_expect {
 				s.current_expect = ""
 			}
+			return "", i
+		case "lesson_name":
 			return "", i
 		default:
 			def, ok := s.defs[method]
