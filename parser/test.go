@@ -5,10 +5,12 @@ import (
 )
 
 func Test(n Node) {
-	expects := annotate(&n)
+	annotate(&n)
+	/*
 	fmt.Println(len(expects))
 	fmt.Println(expects)
 	fmt.Println(n)
+	*/
 	InterpretTest(n)
 }
 

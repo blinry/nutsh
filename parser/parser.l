@@ -41,7 +41,7 @@ func (n Node) String() string {
 
 %%
 
-lesson: toplevel_lines { $$ = $1; lesson = $$ }
+lesson: toplevel_lines { $$ = node("lesson", $1); lesson = $$ }
 
 definition: DEF IDENTIFIER arguments block { $$ = node("def", node($2), $3, $4) }
 

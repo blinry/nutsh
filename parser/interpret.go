@@ -41,6 +41,12 @@ func InterpretTest(n Node) {
 func interpret(n Node, s *scope) (string, interrupt) {
 	i := interrupt{}
 	switch n.typ {
+	case "lesson":
+		_, i = interpret(n.children[0], s)
+		if i.typ != "" {
+			return "", i
+		}
+		return "", interrupt{"done", ""}
 	case "block":
 		var v string
 		for _, node := range n.children {

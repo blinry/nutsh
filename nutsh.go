@@ -17,7 +17,7 @@ func main() {
 	dir := os.Args[2]
 
 	lesson_name := ""
-	var last_lesson model.Lesson
+	var last_lesson *model.Lesson
 	done := false
 
 	if len(os.Args) > 3 {
@@ -28,7 +28,7 @@ func main() {
 
 	switch command {
 	case "run":
-		var l model.Lesson
+		var l *model.Lesson
 		var exists bool
 		var ok bool
 		if lesson_name != "" {
@@ -49,6 +49,7 @@ func main() {
 			if done {
 				println("done")
 				last_lesson.Done = true
+				tut.SaveProgress()
 			}
 			println(lesson_name)
 			if lesson_name != "" {
@@ -64,8 +65,8 @@ func main() {
 		}
 	case "test":
 		for _, l := range tut.Lessons {
-			fmt.Println(l)
-			//parser.test(l)
+			//fmt.Println(l)
+			parser.Test(l.Root)
 		}
 	}
 }
