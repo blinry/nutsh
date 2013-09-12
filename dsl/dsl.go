@@ -125,6 +125,7 @@ func Prompt() bool {
 	exec.Command("stty", "-F", "/dev/tty", "echo", "icanon").Run()
 	lastOutput, wasInteractive = cmdline.ReadOutput()
 	Output()
+	time.Sleep(time.Second)
 
 	return true
 }

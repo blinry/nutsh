@@ -46,14 +46,17 @@ func Init(dir string) Tutorial {
 		goyaml.Unmarshal(s, &done_lessons)
 	}
 	for _, l := range done_lessons {
-		tut.Lessons[l].Done = true
+		l, ok := tut.Lessons[l]
+		if ok {
+			l.Done = true
+		}
 	}
 
 	return tut
 }
 
 func (t Tutorial) SelectLesson() (*Lesson, bool) {
-	fmt.Printf("== %s ==\n", t.Name)
+	fmt.Printf("\n[34m== %s ==[0m\n\n", t.Name)
 	i := 1
 	lessons := make([]*Lesson, 0)
 	for _, l := range t.Lessons {
@@ -69,7 +72,7 @@ func (t Tutorial) SelectLesson() (*Lesson, bool) {
 		lessons = append(lessons, l)
 		i += 1
 	}
-	fmt.Println("0) [Beenden]")
+	fmt.Println("\n0) [Beenden]")
 
 	sel := 0
 tryagain:
