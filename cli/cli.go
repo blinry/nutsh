@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"errors"
 )
 
 var (
@@ -51,15 +50,18 @@ func Spawn(target string) CLI {
 }
 
 // ReadOutput waits for the next output token and returns it.
-func (c CLI) ReadOutput() (string, bool) {
+func (c CLI) ReadOutput() (string, bool, bool) {
 	return c.read(outputType)
 }
 
 // ReadCommand waits for the next command token and returns it.
-func (c CLI) ReadCommand() (string, error) {
+func (c CLI) ReadCommand() (string, bool) {
 	command := ""
 
-	prompt, _ := c.read(promptType)
+	prompt, _, ok := c.read(promptType)
+	if ! ok {
+		return "", false
+	}
 	fmt.Print(prompt)
 	for {
 		select {
@@ -73,9 +75,10 @@ func (c CLI) ReadCommand() (string, error) {
 			case finalCommandType:
 				command += t.string
 				fmt.Print("\r\n")
-				return command, nil
+				return command, true
 			case endType:
-				return "", errors.New("CLI terminated")
+				println("endtype")
+				return "", false
 			}
 		case r := <-c.runes:
 			if c.allowInteractivity {
@@ -86,15 +89,21 @@ func (c CLI) ReadCommand() (string, error) {
 }
 
 // Query executes cmd and returns the output.
-func (c CLI) Query(cmd string) string {
-	c.read(promptType)
+func (c CLI) Query(cmd string) (string, bool) {
+	_, _, ok := c.read(promptType)
+	if ! ok {
+		return "", false
+	}
 	c.send(cmd)
 	c.send("\n")
 	c.allowInteractivity = false
-	o, _ := c.ReadOutput()
+	o, _, ok := c.ReadOutput()
+	if ! ok {
+		return "", false
+	}
 	c.allowInteractivity = true
 
-	return o
+	return o, true
 }
 
 func (c CLI) Interrupt() {
@@ -105,13 +114,17 @@ func (c CLI) send(s string) {
 	c.input <- s
 }
 
-func (c CLI) read(k tokenType) (data string, wasInteractive bool) {
+func (c CLI) read(k tokenType) (data string, wasInteractive bool, ok bool) {
 	wasInteractive = false
+	ok = true
 	for {
 		select {
 		case t := <-c.tokens:
 			if t.tokenType == k {
 				data = t.string
+				return
+			} else if t.tokenType == endType {
+				ok = false
 				return
 			}
 		case r := <-c.runes:

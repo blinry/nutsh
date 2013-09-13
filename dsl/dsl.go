@@ -39,20 +39,31 @@ func Spawn(target string) {
 	}()
 }
 
-func Query(query string) string {
-	return strings.TrimSpace(cmdline.Query(" " + query))
+func Query(query string) (string, bool) {
+	s, ok := cmdline.Query(" " + query)
+	if ! ok {
+		return "", false
+	}
+	return strings.TrimSpace(s), true
 }
 
-func SimulatePrompt(query string) {
+func SimulatePrompt(query string) bool {
 	lastCommand = query
 	fmt.Println("$ " + query)
-	lastOutput = cmdline.Query(query)
+	lastOutput, ok := cmdline.Query(query)
+	if ! ok {
+		return false
+	}
 	fmt.Print(lastOutput)
+	return true
 }
 
-func QueryOutput(query string, expression string) bool {
-	output := cmdline.Query(query)
-	return regexp.MustCompile(expression).MatchString(output)
+func QueryOutput(query string, expression string) (bool, bool) {
+	output, ok := cmdline.Query(query)
+	if ! ok {
+		return false, false
+	}
+	return regexp.MustCompile(expression).MatchString(output), true
 }
 
 func Say(text string) {
@@ -116,14 +127,17 @@ func Prompt() bool {
 
 	didOutput = false
 	exec.Command("stty", "-F", "/dev/tty", "-echo", "-icanon", "min", "1").Run()
-	var err error
-	lastCommand, err = cmdline.ReadCommand()
-	if err != nil {
+	var ok bool
+	lastCommand, ok = cmdline.ReadCommand()
+	if ! ok {
 		// cli terminated
 		return false
 	}
 	exec.Command("stty", "-F", "/dev/tty", "echo").Run()
-	lastOutput, wasInteractive = cmdline.ReadOutput()
+	lastOutput, wasInteractive, ok = cmdline.ReadOutput()
+	if ! ok {
+		return false
+	}
 	Output()
 	time.Sleep(time.Second)
 

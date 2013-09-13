@@ -76,7 +76,10 @@ func interpret(n Node, s *scope) (string, interrupt) {
 				if len(expects.children) > 0 {
 					expect := expects.children[0].children[0].typ
 					s.current_expect = expect
-					dsl.SimulatePrompt(expect)
+					ok := dsl.SimulatePrompt(expect)
+					if ! ok {
+						return "", interrupt{"lesson", ""}
+					}
 				} else {
 					panic("No expect in prompt")
 				}
@@ -164,7 +167,11 @@ func interpret(n Node, s *scope) (string, interrupt) {
 				return "", i
 			}
 		case "run":
-			return dsl.Query(evaluated_arguments[0]), i
+			s, ok := dsl.Query(evaluated_arguments[0])
+			if ! ok {
+				return "", interrupt{"lesson", ""}
+			}
+			return s, i
 		case "break":
 			return "", interrupt{"break", ""}
 		case "lesson":
