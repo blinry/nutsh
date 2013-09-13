@@ -66,6 +66,7 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 				tokens <- token{endType, ""}
 				close(tokens)
 				close(runes)
+				*state = quitState
 				return
 			}
 		}

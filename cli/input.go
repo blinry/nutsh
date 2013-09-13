@@ -13,16 +13,20 @@ func filterInput(input <-chan string, stdin chan<- rune, state *tokenizerState) 
 			return
 		}
 		for _, r := range s {
-			if r == 10 && *state == cmdinputState {
-				stdin <- ''
-				stdin <- ' '
-				stdin <- ''
-				stdin <- '☀'
-				stdin <- ''
-				stdin <- ''
-				stdin <- '☀'
-				stdin <- ''
-				stdin <- ''
+			if *state == cmdinputState {
+				if r == 10 {
+					stdin <- ''
+					stdin <- ' '
+					stdin <- ''
+					stdin <- '☀'
+					stdin <- ''
+					stdin <- ''
+					stdin <- '☀'
+					stdin <- ''
+					stdin <- ''
+				} else if r == 4 {
+					continue
+				}
 			}
 			stdin <- r
 		}

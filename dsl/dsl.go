@@ -17,26 +17,32 @@ var (
 	lastCommand, lastOutput string
 	wasInteractive          bool
 	didOutput               bool
+	running                 bool
 )
 
-func Spawn(target string) {
-	cmdline = cli.Spawn(target)
-
+func init() {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt)
 	go func() {
 		for {
 			<-c
-			cmdline.Interrupt()
-			select {
-			case <-time.After(time.Second):
-				break
-			case <-c:
+			if running {
 				cmdline.Interrupt()
-				Say("Enter `exit` to quit the Nut Shell.")
+				select {
+				case <-time.After(time.Second):
+					break
+				case <-c:
+					cmdline.Interrupt()
+					Say("Geben Sie zum Beenden der Nut Shell `exit` ein.")
+				}
 			}
 		}
 	}()
+}
+
+func Spawn(target string) {
+	cmdline = cli.Spawn(target)
+	running = true
 }
 
 func Query(query string) (string, bool) {
@@ -146,4 +152,5 @@ func Prompt() bool {
 
 func Quit() {
 	cmdline.Quit()
+	running = false
 }
