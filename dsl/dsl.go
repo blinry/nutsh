@@ -127,13 +127,13 @@ func Prompt() bool {
 
 	didOutput = false
 	exec.Command("stty", "-F", "/dev/tty", "-echo", "-icanon", "min", "1").Run()
+	defer exec.Command("stty", "-F", "/dev/tty", "sane").Run()
 	var ok bool
 	lastCommand, ok = cmdline.ReadCommand()
 	if ! ok {
 		// cli terminated
 		return false
 	}
-	exec.Command("stty", "-F", "/dev/tty", "echo").Run()
 	lastOutput, wasInteractive, ok = cmdline.ReadOutput()
 	if ! ok {
 		return false
