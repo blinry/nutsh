@@ -38,7 +38,7 @@ func main() {
 			}
 		}
 		if lesson_name == "" {
-			l, ok = tut.SelectLesson()
+			l, ok = tut.SelectLesson(true)
 			if ! ok {
 				break
 			}
@@ -50,14 +50,13 @@ func main() {
 				last_lesson.Done = true
 				tut.SaveProgress()
 			}
-			println(lesson_name)
 			if lesson_name != "" {
 				l, exists = tut.Lessons[lesson_name]
 				if exists {
 					continue
 				}
 			}
-			l, ok = tut.SelectLesson()
+			l, ok = tut.SelectLesson(done)
 			if ! ok {
 				break
 			}

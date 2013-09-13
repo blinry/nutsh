@@ -55,7 +55,15 @@ func Init(dir string) Tutorial {
 	return tut
 }
 
-func (t Tutorial) SelectLesson() (*Lesson, bool) {
+func (t Tutorial) SelectLesson(auto bool) (*Lesson, bool) {
+	if auto {
+		for _, l := range t.Lessons {
+			if ! l.Done {
+				return l, true
+			}
+		}
+	}
+
 	fmt.Printf("\n[34m== %s ==[0m\n\n", t.Name)
 	i := 1
 	lessons := make([]*Lesson, 0)
