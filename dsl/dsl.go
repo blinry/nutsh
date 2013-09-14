@@ -56,7 +56,8 @@ func Query(query string) (string, bool) {
 func SimulatePrompt(query string) bool {
 	lastCommand = query
 	fmt.Println("$ " + query)
-	lastOutput, ok := cmdline.Query(query)
+	var ok bool
+	lastOutput, ok = cmdline.Query(query)
 	if ! ok {
 		return false
 	}

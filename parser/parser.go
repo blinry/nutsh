@@ -10,18 +10,18 @@ import (
 	"strconv"
 )
 
-var lesson Node
+var lesson *Node
 
 type Node struct {
 	typ string
-	children []Node
+	children []*Node
 }
 
-func node(typ string, n ...Node) Node {
-	return Node{typ: typ, children: n}
+func node(typ string, n ...*Node) *Node {
+	return &Node{typ: typ, children: n}
 }
 
-func (n Node) String() string {
+func (n *Node) String() string {
 	r := n.typ
 	r += ":"
 	for _, child := range(n.children) {
@@ -37,7 +37,7 @@ func (n Node) String() string {
 type NutshSymType struct {
 	yys int
     val string
-	node Node
+	node *Node
 }
 
 const DEF = 57346
@@ -78,7 +78,7 @@ const NutshMaxDepth = 200
 //line parser.l:100
 
 
-func Parse(text string) Node {
+func Parse(text string) *Node {
 	pos = 0
 	first = 0
 	NutshParse(lexer{text: text})

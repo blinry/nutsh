@@ -1,27 +1,33 @@
 package parser
 
 import (
-	"fmt"
+	//"fmt"
 )
 
-func Test(n Node) {
-	annotate(&n)
-	/*
-	fmt.Println(len(expects))
-	fmt.Println(expects)
-	fmt.Println(n)
-	*/
+func Test(n *Node) {
+	expects := annotate(n)
+
+	repeat:
+	unreachedExpects := 0
 	InterpretTest(n)
+	for _, e := range(expects) {
+		if e.children[2].children[0].typ == "false" {
+			unreachedExpects += 1
+		}
+	}
+	if unreachedExpects > 0 {
+		goto repeat
+	}
 }
 
-func annotate(n *Node) []Node {
-	expects := make([]Node, 0)
+func annotate(n *Node) []*Node {
+	expects := make([]*Node, 0)
 	for i := range n.children {
-		c := &n.children[i]
+		c := n.children[i]
 		if c.typ == "prompt" {
-			e := collect_expects(*c)
+			e := collect_expects(c)
 			c.children = append(c.children, node("excpects", e...))
-			fmt.Println(c)
+			//fmt.Println(c)
 			expects = append(expects, e...)
 		}
 		expects = append(expects, annotate(c)...)
@@ -29,12 +35,13 @@ func annotate(n *Node) []Node {
 	return expects
 }
 
-func collect_expects(n Node) []Node {
-	expects := make([]Node, 0)
+func collect_expects(n *Node) []*Node {
+	expects := make([]*Node, 0)
 	for _, c := range n.children {
 		if c.typ == "call" {
 			if c.children[0].typ == "expect" {
-				expects = append(expects, c.children[1].children...)
+				c.children = append(c.children, node("reached", node("false")))
+				expects = append(expects, c)
 			}
 		}
 		if c.typ != "prompt" {

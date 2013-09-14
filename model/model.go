@@ -19,7 +19,7 @@ type Tutorial struct {
 }
 
 type Lesson struct {
-	Root parser.Node
+	Root *parser.Node
 	Done bool
 }
 

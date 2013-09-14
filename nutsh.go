@@ -65,6 +65,7 @@ func main() {
 		for _, l := range tut.Lessons {
 			//fmt.Println(l)
 			parser.Test(l.Root)
+			fmt.Println(parser.GetName(l.Root)+" passed.")
 		}
 	}
 }

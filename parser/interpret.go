@@ -8,8 +8,8 @@ import (
 )
 
 type scope struct {
-	defs           map[string]Node
-	blocks         []Node
+	defs           map[string]*Node
+	blocks         []*Node
 	test           bool
 	current_expect string
 }
@@ -19,17 +19,17 @@ type interrupt struct {
 	value string
 }
 
-func GetName(n Node) string {
+func GetName(n *Node) string {
 	if n.children[0].children[0].children[0].typ == "lesson_name" {
 		return n.children[0].children[0].children[1].children[0].children[0].typ
 	}
 	return "Unnamed"
 }
 
-func Interpret(n Node) (string, bool) {
+func Interpret(n *Node) (string, bool) {
 	dsl.Spawn("bash")
 	fmt.Printf("\n[34m== %s ==[0m\n\n", GetName(n))
-	_, i := interpret(n, &scope{defs: make(map[string]Node), blocks: make([]Node, 0), test: false})
+	_, i := interpret(n, &scope{defs: make(map[string]*Node), blocks: make([]*Node, 0), test: false})
 	dsl.Quit()
 	time.Sleep(1000*time.Millisecond)
 
@@ -42,12 +42,12 @@ func Interpret(n Node) (string, bool) {
 	}
 }
 
-func InterpretTest(n Node) {
+func InterpretTest(n *Node) {
 	dsl.Spawn("bash")
-	interpret(n, &scope{defs: make(map[string]Node), blocks: make([]Node, 0), test: true})
+	interpret(n, &scope{defs: make(map[string]*Node), blocks: make([]*Node, 0), test: true})
 }
 
-func interpret(n Node, s *scope) (string, interrupt) {
+func interpret(n *Node, s *scope) (string, interrupt) {
 	i := interrupt{}
 	switch n.typ {
 	case "lesson":
@@ -74,21 +74,30 @@ func interpret(n Node, s *scope) (string, interrupt) {
 		for {
 			if s.test {
 				if len(expects.children) > 0 {
-					expect := expects.children[0].children[0].typ
-					s.current_expect = expect
-					ok := dsl.SimulatePrompt(expect)
+					// by default, take the first one
+					s.current_expect = expects.children[0].children[1].children[0].children[0].typ
+					// but we prefer any unchecked ones
+					for _, e := range(expects.children) {
+						if e.children[2].children[0].typ == "false" {
+							s.current_expect = e.children[1].children[0].children[0].typ
+						}
+					}
+					ok := dsl.SimulatePrompt(s.current_expect)
 					if ! ok {
 						return "", interrupt{"lesson", ""}
 					}
+					goto skip
 				} else {
-					panic("No expect in prompt")
-				}
-			} else {
-				if ! dsl.Prompt() {
-					// cli terminated
-					return "", interrupt{"lesson", ""}
+					dsl.Say("[No expect, falling back to manual mode.")
 				}
 			}
+
+			if ! dsl.Prompt() {
+				// cli terminated
+				return "", interrupt{"lesson", ""}
+			}
+			skip:
+
 			for _, block := range s.blocks {
 				_, i := interpret(block, s)
 				if i.typ != "" {
@@ -181,8 +190,10 @@ func interpret(n Node, s *scope) (string, interrupt) {
 		case "return":
 			return evaluated_arguments[0], i
 		case "expect":
+			println("exp")
 			if evaluated_arguments[0] == s.current_expect {
 				s.current_expect = ""
+				n.children[2].children[0].typ = "true"
 			}
 			return "", i
 		case "lesson_name":
