@@ -61,7 +61,6 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 			var ok bool
 			r, ok = <-input
 			if ! ok {
-				println("end")
 				quit <- true
 				tokens <- token{endType, ""}
 				close(tokens)

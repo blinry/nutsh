@@ -194,7 +194,6 @@ func interpret(n *Node, s *scope) (string, interrupt) {
 		case "return":
 			return evaluated_arguments[0], i
 		case "expect":
-			println("exp")
 			if evaluated_arguments[0] == s.current_expect {
 				s.current_expect = ""
 				n.children[2].children[0].typ = "true"
