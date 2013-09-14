@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strconv"
-	"launchpad.net/goyaml"
+	"github.com/blinry/goyaml"
 	"morr.cc/nutsh.git/parser"
 	"morr.cc/nutsh.git/cli"
 )
