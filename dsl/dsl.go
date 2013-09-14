@@ -147,7 +147,6 @@ func Prompt() bool {
 		return false
 	}
 	Output()
-	time.Sleep(time.Second)
 
 	return true
 }
