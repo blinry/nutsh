@@ -76,13 +76,17 @@ func interpret(n *Node, s *scope) (string, interrupt) {
 				if len(expects.children) > 0 {
 					// by default, take the first one
 					s.current_expect = expects.children[0].children[1].children[0].children[0].typ
+					var interaction string
+					if len(expects.children[0].children[1].children) > 1 {
+						interaction = expects.children[0].children[1].children[1].children[0].typ
+					}
 					// but we prefer any unchecked ones
 					for _, e := range(expects.children) {
 						if e.children[2].children[0].typ == "false" {
 							s.current_expect = e.children[1].children[0].children[0].typ
 						}
 					}
-					ok := dsl.SimulatePrompt(s.current_expect)
+					ok := dsl.SimulatePrompt(s.current_expect, interaction)
 					if ! ok {
 						return "", interrupt{"lesson", ""}
 					}

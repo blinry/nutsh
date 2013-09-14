@@ -138,6 +138,14 @@ func TestBashInteractiveAPI(t *testing.T) {
 	equalTest(t, i, true)
 }
 
+func TestBashQueryInteractive(t *testing.T) {
+	c := spawnBash()
+	defer c.Quit()
+
+	c.QueryInteractive("man man", "q")
+	queryTest(t, c, "echo hi", "hi\r\n")
+}
+
 func TestRubyQueries(t *testing.T) {
 	b := spawnRuby()
 	defer b.Quit()

@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"time"
 )
 
 var (
@@ -93,6 +94,10 @@ func (c CLI) ReadCommand() (string, bool) {
 
 // Query executes cmd and returns the output.
 func (c CLI) Query(cmd string) (string, bool) {
+	return c.QueryInteractive(cmd,"")
+}
+
+func (c CLI) QueryInteractive(cmd string, interaction string) (string, bool) {
 	_, _, ok := c.read(promptType)
 	if ! ok {
 		return "", false
@@ -100,6 +105,11 @@ func (c CLI) Query(cmd string) (string, bool) {
 	c.send(cmd)
 	c.send("\n")
 	c.allowInteractivity = false
+	if interaction != "" {
+		c.allowInteractivity = true
+		time.Sleep(100*time.Millisecond)
+		c.send(interaction)
+	}
 	o, _, ok := c.ReadOutput()
 	if ! ok {
 		return "", false

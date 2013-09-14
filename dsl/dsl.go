@@ -54,11 +54,11 @@ func Query(query string) (string, bool) {
 	return strings.TrimSpace(s), true
 }
 
-func SimulatePrompt(query string) bool {
+func SimulatePrompt(query string, interaction string) bool {
 	lastCommand = query
 	fmt.Println("$ " + query)
 	var ok bool
-	lastOutput, ok = cmdline.Query(query)
+	lastOutput, ok = cmdline.QueryInteractive(query, interaction)
 	if ! ok {
 		return false
 	}
