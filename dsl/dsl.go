@@ -38,6 +38,7 @@ func init() {
 			}
 		}
 	}()
+	cli.UseStdin()
 }
 
 func Spawn(target string) {

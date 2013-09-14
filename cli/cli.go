@@ -10,6 +10,9 @@ var (
 
 func init() {
 	input = make(chan rune)
+}
+
+func UseStdin() {
 	go readStdin(input)
 }
 
