@@ -6,7 +6,19 @@ import (
 	//"io/ioutil"
 	"morr.cc/nutsh.git/model"
 	"morr.cc/nutsh.git/parser"
+	"strconv"
+	"time"
 )
+
+var (
+	logfile *os.File
+)
+
+func log(typ string, text string) {
+	s := strconv.Quote(text)
+	logfile.Write([]byte(strconv.FormatInt(time.Now().Unix(), 10)+"\t"+typ+"\t"+s+"\n"))
+	logfile.Sync()
+}
 
 func main() {
 	if len(os.Args) < 3 {
@@ -25,9 +37,11 @@ func main() {
 	}
 
 	tut := model.Init(dir)
+	logfile, _ = os.OpenFile(dir+"/log", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 
 	switch command {
 	case "run":
+		log("begin", "")
 		var l *model.Lesson
 		var exists bool
 		var ok bool
@@ -38,17 +52,21 @@ func main() {
 			}
 		}
 		if lesson_name == "" {
-			l, ok = tut.SelectLesson(true)
+			lesson_name, ok = tut.SelectLesson(true)
 			if ! ok {
 				break
 			}
 		}
 		for {
-			last_lesson = l
+			l, _ = tut.Lessons[lesson_name]
+			log("start", lesson_name)
 			lesson_name, done = parser.Interpret(l.Root, tut.Common)
 			if done {
+				log("done", lesson_name)
 				last_lesson.Done = true
 				tut.SaveProgress()
+			} else {
+				log("quit", lesson_name)
 			}
 			if lesson_name != "" {
 				l, exists = tut.Lessons[lesson_name]
@@ -56,8 +74,9 @@ func main() {
 					continue
 				}
 			}
-			l, ok = tut.SelectLesson(done)
+			lesson_name, ok = tut.SelectLesson(done)
 			if ! ok {
+				log("exit", "")
 				break
 			}
 		}
@@ -68,4 +87,5 @@ func main() {
 			fmt.Println(parser.GetName(l.Root)+" passed.")
 		}
 	}
+	logfile.Close()
 }

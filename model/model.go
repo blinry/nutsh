@@ -60,19 +60,19 @@ func Init(dir string) Tutorial {
 	return tut
 }
 
-func (t Tutorial) SelectLesson(auto bool) (*Lesson, bool) {
+func (t Tutorial) SelectLesson(auto bool) (string, bool) {
 	if auto {
-		for _, l := range t.Lessons {
+		for name, l := range t.Lessons {
 			if ! l.Done {
-				return l, true
+				return name, true
 			}
 		}
 	}
 
 	fmt.Printf("\n[34m== %s ==[0m\n\n", t.Name)
 	i := 1
-	lessons := make([]*Lesson, 0)
-	for _, l := range t.Lessons {
+	lessons := make([]string, 0)
+	for name, l := range t.Lessons {
 		if l.Done {
 			fmt.Print("[32m")
 		}
@@ -82,7 +82,7 @@ func (t Tutorial) SelectLesson(auto bool) (*Lesson, bool) {
 			fmt.Print("[0m")
 		}
 		fmt.Println()
-		lessons = append(lessons, l)
+		lessons = append(lessons, name)
 		i += 1
 	}
 	fmt.Println("\n0) [Beenden]")
@@ -111,7 +111,7 @@ tryagain:
 	}
 
 	if sel == 0 {
-		return &Lesson{}, false
+		return "", false
 	}
 
 	return lessons[sel-1], true
