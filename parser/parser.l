@@ -39,6 +39,11 @@ func (n *Node) String() string {
 %token <val> DEF IDENTIFIER LINE LINESEP IF ELSE PROMPT STRING AND OR NOT MATCH EQ
 %type <node> lesson toplevel_lines toplevel_line line call stringexpressions stringexpression definition arguments identifiers block line lines ifclause prompt state call calls string
 
+%left AND OR
+%left NOT
+%left EQ MATCH
+%left '+'
+
 %%
 
 lesson: toplevel_lines { $$ = node("lesson", $1); lesson = $$ }

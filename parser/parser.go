@@ -68,6 +68,7 @@ var NutshToknames = []string{
 	"NOT",
 	"MATCH",
 	"EQ",
+	" +",
 }
 var NutshStatenames = []string{}
 
@@ -75,7 +76,7 @@ const NutshEofCode = 1
 const NutshErrCode = 2
 const NutshMaxDepth = 200
 
-//line parser.l:100
+//line parser.l:105
 
 
 func Parse(text string) *Node {
@@ -91,8 +92,8 @@ var NutshExca = []int{
 	1, -1,
 	-2, 0,
 	-1, 10,
-	19, 24,
-	21, 24,
+	20, 24,
+	22, 24,
 	-2, 15,
 }
 
@@ -102,34 +103,34 @@ const NutshPrivate = 57344
 var NutshTokenNames []string
 var NutshStates []string
 
-const NutshLast = 81
+const NutshLast = 85
 
 var NutshAct = []int{
 
-	18, 23, 20, 19, 5, 10, 11, 34, 35, 15,
-	32, 33, 12, 51, 13, 16, 25, 31, 56, 29,
-	30, 57, 36, 37, 52, 24, 24, 26, 41, 39,
-	42, 27, 46, 47, 48, 49, 50, 54, 45, 60,
-	55, 10, 11, 53, 44, 34, 35, 58, 32, 33,
-	34, 35, 24, 32, 33, 31, 59, 15, 6, 15,
-	31, 15, 12, 16, 13, 16, 22, 17, 14, 21,
-	9, 8, 7, 38, 43, 28, 4, 40, 3, 2,
-	1,
+	18, 23, 20, 19, 5, 10, 11, 56, 15, 54,
+	57, 12, 55, 13, 16, 24, 25, 26, 24, 29,
+	30, 31, 36, 37, 52, 32, 33, 31, 41, 39,
+	42, 15, 46, 47, 48, 49, 50, 16, 27, 45,
+	22, 10, 11, 53, 21, 34, 35, 58, 32, 33,
+	31, 60, 44, 24, 34, 35, 59, 32, 33, 31,
+	15, 51, 34, 35, 17, 32, 33, 31, 6, 15,
+	14, 9, 12, 8, 13, 16, 7, 38, 43, 28,
+	4, 40, 3, 2, 1,
 }
 var NutshPact = []int{
 
-	-1000, -1000, 54, -1000, -1000, -1000, 62, -1000, -1000, -1000,
-	-1000, -1000, 52, 7, 6, 14, -1000, 2, 33, -1000,
-	-1000, 52, 52, -1000, -1000, -1000, 56, 52, 7, 39,
-	29, 52, 52, 52, 52, 52, -5, 38, 4, -1000,
-	19, 38, -1000, 0, -1000, 7, 38, 38, 38, 38,
-	38, -1000, -1000, -1000, -1000, 52, -1000, 34, -1000, 38,
+	-1000, -1000, 64, -1000, -1000, -1000, 59, -1000, -1000, -1000,
+	-1000, -1000, 26, -2, -5, 20, -1000, 1, 33, -1000,
+	-1000, 26, 26, -1000, -1000, -1000, 55, 26, -2, 47,
+	30, 26, 26, 26, 26, 26, 42, 10, 3, -1000,
+	-10, 50, -1000, -12, -1000, -2, -1000, 4, 4, 10,
+	10, -1000, -1000, -1000, -1000, 26, -1000, 46, -1000, 50,
 	-1000,
 }
 var NutshPgo = []int{
 
-	0, 80, 79, 78, 4, 2, 77, 0, 76, 75,
-	74, 1, 73, 72, 71, 70, 68, 3,
+	0, 84, 83, 82, 4, 2, 81, 0, 80, 79,
+	78, 1, 77, 76, 73, 71, 70, 3,
 }
 var NutshR1 = []int{
 
@@ -149,10 +150,10 @@ var NutshChk = []int{
 
 	-1000, -1, -2, -3, -8, -4, 4, -13, -14, -15,
 	-5, -17, 8, 10, -16, 5, 11, 5, -7, -17,
-	-5, 17, 14, -11, 19, -11, 21, 17, -9, 17,
-	-11, 22, 15, 16, 12, 13, -7, -7, -12, -5,
+	-5, 18, 14, -11, 20, -11, 22, 18, -9, 18,
+	-11, 17, 15, 16, 12, 13, -7, -7, -12, -5,
 	-6, -7, -11, -10, 5, 9, -7, -7, -7, -7,
-	-7, 18, 20, -4, 18, 21, 18, 21, -11, -7,
+	-7, 19, 21, -4, 19, 22, 19, 22, -11, -7,
 	5,
 }
 var NutshDef = []int{
@@ -171,7 +172,7 @@ var NutshTok1 = []int{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	17, 18, 3, 22, 21, 3, 3, 3, 3, 3,
+	18, 19, 3, 17, 22, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -179,7 +180,7 @@ var NutshTok1 = []int{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 19, 3, 20,
+	3, 3, 3, 20, 3, 21,
 }
 var NutshTok2 = []int{
 
@@ -416,121 +417,121 @@ Nutshdefault:
 	switch Nutshnt {
 
 	case 1:
-		//line parser.l:44
+		//line parser.l:49
 		{ NutshVAL.node = node("lesson", NutshS[Nutshpt-0].node); lesson = NutshVAL.node }
 	case 2:
-		//line parser.l:46
+		//line parser.l:51
 		{ NutshVAL.node = node("def", node(NutshS[Nutshpt-2].val), NutshS[Nutshpt-1].node, NutshS[Nutshpt-0].node) }
 	case 3:
-		//line parser.l:48
+		//line parser.l:53
 		{ NutshVAL.node = node("arguments") }
 	case 4:
-		//line parser.l:49
+		//line parser.l:54
 		{ NutshVAL.node = node("arguments", NutshS[Nutshpt-1].node.children...) }
 	case 5:
-		//line parser.l:51
+		//line parser.l:56
 		{ NutshVAL.node = NutshS[Nutshpt-1].node }
 	case 6:
-		//line parser.l:53
+		//line parser.l:58
 		{ NutshVAL.node = node("block") }
 	case 7:
-		//line parser.l:54
+		//line parser.l:59
 		{ NutshVAL.node = node("block", append(NutshS[Nutshpt-1].node.children, NutshS[Nutshpt-0].node)...) }
 	case 8:
-		//line parser.l:56
+		//line parser.l:61
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 9:
-		//line parser.l:57
-		{ NutshVAL.node = NutshS[Nutshpt-0].node }
-	case 10:
-		//line parser.l:59
-		{ NutshVAL.node = node("block") }
-	case 11:
-		//line parser.l:60
-		{ NutshVAL.node = node("block", append(NutshS[Nutshpt-1].node.children, NutshS[Nutshpt-0].node)...) }
-	case 12:
 		//line parser.l:62
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
+	case 10:
+		//line parser.l:64
+		{ NutshVAL.node = node("block") }
+	case 11:
+		//line parser.l:65
+		{ NutshVAL.node = node("block", append(NutshS[Nutshpt-1].node.children, NutshS[Nutshpt-0].node)...) }
+	case 12:
+		//line parser.l:67
+		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 13:
-		//line parser.l:63
+		//line parser.l:68
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 14:
-		//line parser.l:64
+		//line parser.l:69
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 15:
-		//line parser.l:65
+		//line parser.l:70
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 16:
-		//line parser.l:66
+		//line parser.l:71
 		{ NutshVAL.node = node("call", node("say"), node("stringexpressions", NutshS[Nutshpt-0].node)) }
 	case 17:
-		//line parser.l:68
+		//line parser.l:73
 		{ NutshVAL.node = node("if", NutshS[Nutshpt-1].node, NutshS[Nutshpt-0].node, node("block")) }
 	case 18:
-		//line parser.l:69
+		//line parser.l:74
 		{ NutshVAL.node = node("if", NutshS[Nutshpt-3].node, NutshS[Nutshpt-2].node, NutshS[Nutshpt-0].node) }
 	case 19:
-		//line parser.l:71
+		//line parser.l:76
 		{ NutshVAL.node = node("prompt", NutshS[Nutshpt-0].node) }
 	case 20:
-		//line parser.l:73
+		//line parser.l:78
 		{ NutshVAL.node = node("state", NutshS[Nutshpt-1].node, NutshS[Nutshpt-0].node) }
 	case 21:
-		//line parser.l:75
+		//line parser.l:80
 		{ NutshVAL.node = node("identifiers") }
 	case 22:
-		//line parser.l:76
+		//line parser.l:81
 		{ NutshVAL.node = node("identifiers", node("id", node(NutshS[Nutshpt-0].val))) }
 	case 23:
-		//line parser.l:77
+		//line parser.l:82
 		{ NutshVAL.node = node("identifiers", append(NutshS[Nutshpt-2].node.children, node(NutshS[Nutshpt-0].val))...) }
 	case 24:
-		//line parser.l:79
+		//line parser.l:84
 		{ NutshVAL.node = node("block", NutshS[Nutshpt-0].node) }
 	case 25:
-		//line parser.l:80
+		//line parser.l:85
 		{ NutshVAL.node = node("block", append(NutshS[Nutshpt-2].node.children, NutshS[Nutshpt-0].node)...) }
 	case 26:
-		//line parser.l:82
+		//line parser.l:87
 		{ NutshVAL.node = node("call", node(NutshS[Nutshpt-0].val), node("stringexpressions")) }
 	case 27:
-		//line parser.l:83
+		//line parser.l:88
 		{ NutshVAL.node = node("call", node(NutshS[Nutshpt-3].val), NutshS[Nutshpt-1].node) }
 	case 28:
-		//line parser.l:85
+		//line parser.l:90
 		{ NutshVAL.node = node("stringexpressions", NutshS[Nutshpt-0].node) }
 	case 29:
-		//line parser.l:86
+		//line parser.l:91
 		{ NutshVAL.node = node("stringexpressions", append(NutshS[Nutshpt-2].node.children, NutshS[Nutshpt-0].node)...) }
 	case 30:
-		//line parser.l:88
+		//line parser.l:93
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 31:
-		//line parser.l:89
+		//line parser.l:94
 		{ NutshVAL.node = NutshS[Nutshpt-0].node }
 	case 32:
-		//line parser.l:90
+		//line parser.l:95
 		{ NutshVAL.node = node("+", NutshS[Nutshpt-2].node, NutshS[Nutshpt-0].node) }
 	case 33:
-		//line parser.l:91
+		//line parser.l:96
 		{ NutshVAL.node = node("call", node("match"), node("stringexpressions", NutshS[Nutshpt-2].node, NutshS[Nutshpt-0].node)) }
 	case 34:
-		//line parser.l:92
+		//line parser.l:97
 		{ NutshVAL.node = node("call", node("equal"), node("stringexpressions", NutshS[Nutshpt-2].node, NutshS[Nutshpt-0].node)) }
 	case 35:
-		//line parser.l:93
+		//line parser.l:98
 		{ NutshVAL.node = NutshS[Nutshpt-1].node }
 	case 36:
-		//line parser.l:94
+		//line parser.l:99
 		{ NutshVAL.node = node("not", NutshS[Nutshpt-0].node) }
 	case 37:
-		//line parser.l:95
+		//line parser.l:100
 		{ NutshVAL.node = node("and", NutshS[Nutshpt-2].node, NutshS[Nutshpt-0].node) }
 	case 38:
-		//line parser.l:96
+		//line parser.l:101
 		{ NutshVAL.node = node("or", NutshS[Nutshpt-2].node, NutshS[Nutshpt-0].node) }
 	case 39:
-		//line parser.l:98
+		//line parser.l:103
 		{ s := strings.Replace(NutshS[Nutshpt-0].val, "\n", " ", -1); s, _ = strconv.Unquote(s); NutshVAL.node = node("string", node(s)) }
 	}
 	goto Nutshstack /* stack new state and value */
