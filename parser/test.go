@@ -4,12 +4,12 @@ import (
 	//"fmt"
 )
 
-func Test(n *Node) {
+func Test(n *Node, common *Node) {
 	expects := annotate(n)
 
 	repeat:
 	unreachedExpects := 0
-	InterpretTest(n)
+	InterpretTest(n, common)
 	for _, e := range(expects) {
 		if e.children[2].children[0].typ == "false" {
 			unreachedExpects += 1

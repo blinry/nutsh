@@ -45,7 +45,7 @@ func main() {
 		}
 		for {
 			last_lesson = l
-			lesson_name, done = parser.Interpret(l.Root)
+			lesson_name, done = parser.Interpret(l.Root, tut.Common)
 			if done {
 				last_lesson.Done = true
 				tut.SaveProgress()
@@ -64,7 +64,7 @@ func main() {
 	case "test":
 		for _, l := range tut.Lessons {
 			//fmt.Println(l)
-			parser.Test(l.Root)
+			parser.Test(l.Root, tut.Common)
 			fmt.Println(parser.GetName(l.Root)+" passed.")
 		}
 	}

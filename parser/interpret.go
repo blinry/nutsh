@@ -3,7 +3,7 @@ package parser
 import (
 	"morr.cc/nutsh.git/dsl"
 	"regexp"
-	"time"
+	//"time"
 	"fmt"
 )
 
@@ -26,12 +26,14 @@ func GetName(n *Node) string {
 	return "Unnamed"
 }
 
-func Interpret(n *Node) (string, bool) {
+func Interpret(n *Node, common *Node) (string, bool) {
 	dsl.Spawn("bash")
 	fmt.Printf("\n[34m== %s ==[0m\n\n", GetName(n))
-	_, i := interpret(n, &scope{defs: make(map[string]*Node), blocks: make([]*Node, 0), test: false})
+	s := scope{defs: make(map[string]*Node), blocks: make([]*Node, 0), test: false}
+	interpret(common, &s)
+	_, i := interpret(n, &s)
 	dsl.Quit()
-	time.Sleep(1000*time.Millisecond)
+	//time.Sleep(1000*time.Millisecond)
 
 	if i.typ == "lesson" {
 		return i.value, false
@@ -42,9 +44,11 @@ func Interpret(n *Node) (string, bool) {
 	}
 }
 
-func InterpretTest(n *Node) {
+func InterpretTest(n *Node, common *Node) {
 	dsl.Spawn("bash")
-	interpret(n, &scope{defs: make(map[string]*Node), blocks: make([]*Node, 0), test: true})
+	s := scope{defs: make(map[string]*Node), blocks: make([]*Node, 0), test: true}
+	interpret(common, &s)
+	interpret(n, &s)
 }
 
 func interpret(n *Node, s *scope) (string, interrupt) {
