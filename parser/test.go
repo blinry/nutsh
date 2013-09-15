@@ -12,6 +12,7 @@ func Test(n *Node, common *Node) {
 	InterpretTest(n, common)
 	for _, e := range(expects) {
 		if e.children[2].children[0].typ == "false" {
+			println(e.children[1].children[0].children[0].typ)
 			unreachedExpects += 1
 		}
 	}
