@@ -118,7 +118,7 @@ func tokenize(input <-chan rune, tokens chan<- token, runes chan<- rune, state *
 					tokens <- token{finalCommandType, buffer[0:len(buffer)-1] + "\n"}
 					*state++
 					interactive = false
-					timer.Reset(100 * time.Millisecond)
+					timer.Reset(500 * time.Millisecond)
 				}
 			}
 			buffer = ""
