@@ -86,7 +86,7 @@ func (c CLI) ReadCommand() (string, bool) {
 			}
 		case r := <-c.runes:
 			if c.allowInteractivity {
-				fmt.Printf(string(r))
+				fmt.Print(string(r))
 			}
 		}
 	}
@@ -143,7 +143,7 @@ func (c CLI) read(k tokenType) (data string, wasInteractive bool, ok bool) {
 		case r := <-c.runes:
 			if c.allowInteractivity {
 				wasInteractive = true
-				fmt.Printf(string(r))
+				fmt.Print(string(r))
 			}
 		}
 	}
