@@ -83,11 +83,12 @@ func main() {
 		if lesson_name != "" {
 			l, _ := tut.Lessons[lesson_name]
 			parser.Test(l.Root, tut.Common)
-			fmt.Println(parser.GetName(l.Root)+" passed.")
+			fmt.Println("\""+parser.GetName(l.Root)+"\""+" passed.")
 		} else {
 			for _, l := range tut.Lessons {
 				parser.Test(l.Root, tut.Common)
 			}
+			fmt.Println("All lessons passed!")
 		}
 	}
 	logfile.Close()
