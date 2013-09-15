@@ -29,7 +29,6 @@ func main() {
 	dir := os.Args[2]
 
 	lesson_name := ""
-	var last_lesson *model.Lesson
 	done := false
 
 	if len(os.Args) > 3 {
@@ -63,7 +62,7 @@ func main() {
 			lesson_name, done = parser.Interpret(l.Root, tut.Common)
 			if done {
 				log("done", lesson_name)
-				last_lesson.Done = true
+				l.Done = true
 				tut.SaveProgress()
 			} else {
 				log("quit", lesson_name)
@@ -81,10 +80,14 @@ func main() {
 			}
 		}
 	case "test":
-		for _, l := range tut.Lessons {
-			//fmt.Println(l)
+		if lesson_name != "" {
+			l, _ := tut.Lessons[lesson_name]
 			parser.Test(l.Root, tut.Common)
 			fmt.Println(parser.GetName(l.Root)+" passed.")
+		} else {
+			for _, l := range tut.Lessons {
+				parser.Test(l.Root, tut.Common)
+			}
 		}
 	}
 	logfile.Close()
