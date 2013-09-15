@@ -18,6 +18,7 @@ var (
 	wasInteractive          bool
 	didOutput               bool
 	running                 bool
+	lastOutputWasSay        bool
 )
 
 func init() {
@@ -63,6 +64,7 @@ func SimulatePrompt(query string, interaction string) bool {
 		return false
 	}
 	fmt.Print(lastOutput)
+	lastOutputWasSay = false
 	return true
 }
 
@@ -76,9 +78,14 @@ func QueryOutput(query string, expression string) (bool, bool) {
 
 func Say(text string) {
 	text = regexp.MustCompile("`([^`]+)`").ReplaceAllString(text, "[32m$1[36m")
+	text = regexp.MustCompile("\\*([^*]+)\\*").ReplaceAllString(text, "[33m$1[36m")
 	text = regexp.MustCompile("\\s+").ReplaceAllString(text, " ")
 	_, c := getsize()
-	fmt.Printf("[36m\n%s\n\n[0m", indent(wrap(text, c-4), 4))
+	if ! lastOutputWasSay {
+		fmt.Printf("\n")
+	}
+	fmt.Printf("[36m%s\n\n[0m", indent(wrap(text, c-4), 4))
+	lastOutputWasSay = true
 }
 
 func wrap(text string, width int) string {
@@ -126,6 +133,7 @@ func Output() {
 		fmt.Print(lastOutput)
 		didOutput = true
 	}
+	lastOutputWasSay = false
 }
 
 func Prompt() bool {
@@ -148,6 +156,7 @@ func Prompt() bool {
 	}
 	Output()
 
+	lastOutputWasSay = false
 	return true
 }
 
