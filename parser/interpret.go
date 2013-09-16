@@ -125,6 +125,7 @@ func interpret(n *Node, s *scope) (string, interrupt) {
 				}
 			}
 		}
+		// TODO: return?
 	case "if":
 		condition := n.children[0]
 		block := n.children[1]
@@ -134,13 +135,14 @@ func interpret(n *Node, s *scope) (string, interrupt) {
 			return "", i
 		}
 		if v == "" {
-			_, i = interpret(else_block, s)
+			v, i = interpret(else_block, s)
 		} else {
-			_, i = interpret(block, s)
+			v, i = interpret(block, s)
 		}
 		if i.typ != "" {
 			return "", i
 		}
+		return v, i
 	case "state":
 		promptblock := n.children[0]
 		s.blocks = append(s.blocks, promptblock)
