@@ -28,7 +28,7 @@ func GetName(n *Node) string {
 
 func Interpret(n *Node, common *Node) (string, bool) {
 	dsl.Spawn("bash")
-	fmt.Printf("\n[34m== %s ==[0m\n", GetName(n))
+	fmt.Printf("\n[34m== %s ==[0m\n\n", GetName(n))
 	s := scope{defs: make(map[string]*Node), blocks: make([]*Node, 0), test: false}
 	interpret(common, &s)
 	_, i := interpret(n, &s)
