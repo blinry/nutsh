@@ -9,7 +9,7 @@ import (
 	"github.com/blinry/goyaml"
 	"morr.cc/nutsh.git/parser"
 	"morr.cc/nutsh.git/cli"
-	"sort"
+	//"sort"
 )
 
 type Tutorial struct {
@@ -78,36 +78,34 @@ func Init(dir string, low int, high int) Tutorial {
 }
 
 func (t Tutorial) SelectLesson(auto bool) (string, bool) {
+	lessons := make([]string, len(t.Lessons))
+	for name, _ := range t.Lessons {
+		if NameToNumber(name) >= 0 {
+			lessons[NameToNumber(name)] = name
+		}
+	}
+
 	if auto {
-		for name, l := range t.Lessons {
+		for _, name := range lessons {
+			l := t.Lessons[name]
 			if ! l.Done {
 				return name, true
 			}
 		}
 	}
 
-	keys := make([]string, 0)
-	for name, _ := range t.Lessons {
-		keys = append(keys, name)
-	}
-	sort.Strings(keys)
-
 	fmt.Printf("\n[34m== %s ==[0m\n\n", t.Name)
-	i := 1
-	lessons := make([]string, 0)
-	for _, name := range keys {
+	for i, name := range lessons {
 		l := t.Lessons[name]
 		if l.Done {
 			fmt.Print("[32m")
 		}
-		fmt.Printf("%d) ", i)
+		fmt.Printf("%d) ", i+1)
 		fmt.Print(l.Name())
 		if l.Done {
 			fmt.Print("[0m")
 		}
 		fmt.Println()
-		lessons = append(lessons, name)
-		i += 1
 	}
 	fmt.Println("\n0) [Beenden]")
 
