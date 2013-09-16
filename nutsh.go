@@ -40,7 +40,7 @@ func main() {
 	high := 999
 
 	// dirty hack for the Vorkurs:
-	if regexp.MustCompile(`\.vorkurs`).MatchString(dir) {
+	if regexp.MustCompile(`nutsh-vorkurs`).MatchString(dir) {
 		_, _, day := time.Now().Date()
 		switch day {
 			case 16: // Mo
