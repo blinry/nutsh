@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strconv"
+	"regexp"
 	"github.com/blinry/goyaml"
 	"morr.cc/nutsh.git/parser"
 	"morr.cc/nutsh.git/cli"
@@ -24,7 +25,16 @@ type Lesson struct {
 	Done bool
 }
 
-func Init(dir string) Tutorial {
+func NameToNumber(name string) int {
+	number_string := regexp.MustCompile(`\d+`).FindString(name)
+	number, err := strconv.Atoi(number_string)
+	if err != nil {
+		return -1
+	}
+	return number
+}
+
+func Init(dir string, low int, high int) Tutorial {
 	info, _ := ioutil.ReadFile(dir + "/info.yaml")
 	var tut Tutorial
 	goyaml.Unmarshal(info, &tut)
@@ -34,6 +44,12 @@ func Init(dir string) Tutorial {
 	files, _ := ioutil.ReadDir(dir)
 	for _, file := range files {
 		if len(file.Name()) >= 7 && file.Name()[len(file.Name())-6:len(file.Name())] == ".nutsh" {
+
+			number := NameToNumber(file.Name())
+			if (number < low || number > high) && !(file.Name() == "common.nutsh") {
+				continue
+			}
+
 			content, _ := ioutil.ReadFile(dir + "/" + file.Name())
 			rootnode := parser.Parse(string(content))
 			if file.Name() == "common.nutsh" {

@@ -100,7 +100,7 @@ stringexpression: string { $$ = $1 }
 | stringexpression AND stringexpression { $$ = node("and", $1, $3) }
 | stringexpression OR stringexpression { $$ = node("or", $1, $3) }
 
-string: STRING { s := strings.Replace($1, "\n", " ", -1); s, _ = strconv.Unquote(s); $$ = node("string", node(s)) }
+string: STRING { s, _ := strconv.Unquote($1); $$ = node("string", node(s)) }
 
 %%
 

@@ -8,6 +8,7 @@ import (
 	"morr.cc/nutsh.git/parser"
 	"strconv"
 	"time"
+	"regexp"
 )
 
 var (
@@ -35,7 +36,39 @@ func main() {
 		lesson_name = os.Args[3]
 	}
 
-	tut := model.Init(dir)
+	low := -1
+	high := 999
+
+	// dirty hack for the Vorkurs:
+	if regexp.MustCompile(`\.vorkurs`).MatchString(dir) {
+		_, _, day := time.Now().Date()
+		switch day {
+			case 16: // Mo
+			high = 4
+			case 17: // Di
+			high = 9
+			/*
+			case 18: // Mi
+			case 19: // Do
+			case 20: // Fr
+			case 21: // Sa
+			case 22: // So
+
+			case 23: // Mo
+			case 24: // Di
+			case 25: // Mi
+			case 26: // Do
+			case 27: // Fr
+			*/
+		}
+	}
+
+	if lesson_name != "" {
+		low = model.NameToNumber(lesson_name)
+		high = model.NameToNumber(lesson_name)
+	}
+
+	tut := model.Init(dir, low, high)
 	logfile, _ = os.OpenFile(dir+"/log", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 
 	switch command {
