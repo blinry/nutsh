@@ -73,7 +73,7 @@ func main() {
 					continue
 				}
 			}
-			lesson_name, ok = tut.SelectLesson(done)
+			lesson_name, ok = tut.SelectLesson(false)
 			if ! ok {
 				log("exit", "")
 				break
