@@ -84,7 +84,7 @@ func main() {
 			}
 		}
 		if lesson_name == "" {
-			lesson_name, ok = tut.SelectLesson(true)
+			lesson_name, ok = tut.SelectLesson(false)
 			if ! ok {
 				break
 			}
