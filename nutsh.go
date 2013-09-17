@@ -46,8 +46,9 @@ func main() {
 			high = 4
 			case 17: // Di
 			high = 9
-			/*
 			case 18: // Mi
+			high = 14
+			/*
 			case 19: // Do
 			case 20: // Fr
 			case 21: // Sa
