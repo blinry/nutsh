@@ -8,7 +8,6 @@ import (
 	"morr.cc/nutsh.git/parser"
 	"strconv"
 	"time"
-	"regexp"
 )
 
 var (
@@ -40,7 +39,7 @@ func main() {
 	high := 999
 
 	// dirty hack for the Vorkurs:
-	if regexp.MustCompile(`nutsh-vorkurs`).MatchString(dir) {
+	if _, err := os.Stat(dir+"/all"); err != nil {
 		_, _, day := time.Now().Date()
 		switch day {
 			case 16: // Mo
