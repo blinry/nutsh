@@ -78,7 +78,7 @@ func QueryOutput(query string, expression string) (bool, bool) {
 
 func Say(text string) {
 	text = regexp.MustCompile("`([^`]+)`").ReplaceAllString(text, "[32m$1[36m")
-	text = regexp.MustCompile("([^\\\\])\\*([^*]+[^\\\\])\\*").ReplaceAllString(text, "$1[33m$2[36m")
+	text = regexp.MustCompile("(^|[^\\\\])\\*([^*]+[^\\\\])\\*").ReplaceAllString(text, "$1[33m$2[36m")
 	text = regexp.MustCompile("\\\\\\*").ReplaceAllString(text, "*")
 	text = regexp.MustCompile("\\s+").ReplaceAllString(text, " ")
 	_, c := getsize()
