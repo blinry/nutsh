@@ -48,8 +48,9 @@ func main() {
 			high = 9
 			case 18: // Mi
 			high = 14
-			/*
 			case 19: // Do
+			high = 19
+			/*
 			case 20: // Fr
 			case 21: // Sa
 			case 22: // So
