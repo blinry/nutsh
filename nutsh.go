@@ -52,11 +52,14 @@ func main() {
 			high = 19
 			case 20: // Fr
 			high = 21
-			/*
 			case 21: // Sa
+			high = 21
 			case 22: // So
+			high = 21
 
 			case 23: // Mo
+			high = 21
+			/*
 			case 24: // Di
 			case 25: // Mi
 			case 26: // Do
