@@ -59,7 +59,7 @@ func main() {
 			case 23: // Mo
 			high = 25
 			case 24: // Di
-			high = 25
+			high = 26
 			/*
 			case 25: // Mi
 			case 26: // Do
