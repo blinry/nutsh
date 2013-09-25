@@ -60,8 +60,9 @@ func main() {
 			high = 25
 			case 24: // Di
 			high = 26
-			/*
 			case 25: // Mi
+			high = 26
+			/*
 			case 26: // Do
 			case 27: // Fr
 			*/
