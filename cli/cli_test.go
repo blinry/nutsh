@@ -153,6 +153,7 @@ func TestRubyQueries(t *testing.T) {
 	queryTest(t, b, "1+1", "2\r\n")
 }
 
+/*
 func TestPythonQueries(t *testing.T) {
 	b := spawnPython()
 	defer b.Quit()
@@ -165,3 +166,4 @@ func TestPythonMultiLine(t *testing.T) {
 	defer c.Quit()
 	queryTest(t, c, "if 1:\n\t42\n", "42\r\n")
 }
+*/

@@ -3,14 +3,14 @@ package cli
 import (
 	"bufio"
 	"github.com/kr/pty"
-	//"os"
+	"os"
 )
 
 func startProcess(command string, stdin <-chan rune, stdout chan<- rune) {
 	tty, _ := pty.Start(stringToCmd(command))
 
-	//input, _ := os.Create("/tmp/nutsh-input")
-	//output, _ := os.Create("/tmp/nutsh-output")
+	input, _ := os.Create("/tmp/nutsh-input")
+	output, _ := os.Create("/tmp/nutsh-output")
 
 	go func() {
 		for {
@@ -18,7 +18,7 @@ func startProcess(command string, stdin <-chan rune, stdout chan<- rune) {
 			if ! ok {
 				return
 			}
-			//input.Write([]byte(string(r)))
+			input.Write([]byte(string(r)))
 			tty.Write([]byte(string(r)))
 		}
 	}()
@@ -31,7 +31,7 @@ func startProcess(command string, stdin <-chan rune, stdout chan<- rune) {
 				close(stdout)
 				return
 			}
-			//output.Write([]byte(string(r)))
+			output.Write([]byte(string(r)))
 			stdout <- r
 		}
 	}()
