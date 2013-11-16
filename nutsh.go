@@ -38,6 +38,7 @@ func main() {
 	low := -1
 	high := 999
 
+	/*
 	// dirty hack for the Vorkurs:
 	if _, err := os.Stat(dir+"/all"); err != nil {
 		_, _, day := time.Now().Date()
@@ -66,6 +67,7 @@ func main() {
 			high = 30
 		}
 	}
+	*/
 
 	if lesson_name != "" {
 		low = model.NameToNumber(lesson_name)
