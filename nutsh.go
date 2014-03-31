@@ -6,8 +6,6 @@ import (
 	//"io/ioutil"
 	"morr.cc/nutsh.git/model"
 	"morr.cc/nutsh.git/parser"
-	"strconv"
-	"time"
 )
 
 func main() {
@@ -25,46 +23,7 @@ func main() {
 		lesson_name = os.Args[3]
 	}
 
-	low := -1
-	high := 999
-
-	/*
-	// dirty hack for the Vorkurs:
-	if _, err := os.Stat(dir+"/all"); err != nil {
-		_, _, day := time.Now().Date()
-		switch day {
-			case 16: // Mo
-			high = 4
-			case 17: // Di
-			high = 9
-			case 18: // Mi
-			high = 14
-			case 19: // Do
-			high = 19
-			case 20: // Fr
-			high = 21
-			case 21: // Sa
-			high = 21
-			case 22: // So
-			high = 21
-			case 23: // Mo
-			high = 25
-			case 24: // Di
-			high = 26
-			case 25: // Mi
-			high = 26
-			case 26: // Do
-			high = 30
-		}
-	}
-	*/
-
-	if lesson_name != "" {
-		low = model.NameToNumber(lesson_name)
-		high = model.NameToNumber(lesson_name)
-	}
-
-	tut := model.Init(dir, low, high)
+	tut := model.Init(dir)
 
 	switch command {
 	case "run":

@@ -9,13 +9,14 @@ import (
 	"github.com/blinry/goyaml"
 	"morr.cc/nutsh.git/parser"
 	"morr.cc/nutsh.git/cli"
-	//"sort"
+	"time"
 )
 
 type Tutorial struct {
 	Name    string
 	Target  string
 	Version int
+	Days    map[string]int
 	Basedir string
 	Lessons map[string]*Lesson
 	Common *parser.Node
@@ -35,12 +36,27 @@ func NameToNumber(name string) int {
 	return number
 }
 
-func Init(dir string, low int, high int) Tutorial {
+func Init(dir string) Tutorial {
 	info, _ := ioutil.ReadFile(dir + "/info.yaml")
 	var tut Tutorial
 	goyaml.Unmarshal(info, &tut)
 	tut.Basedir = dir
 	tut.Lessons = make(map[string]*Lesson)
+
+	low := -1
+	high := -1
+
+	for day, max := range tut.Days {
+		date, _ := time.Parse("2006-01-02", day)
+		if date.Before(time.Now()) {
+			high = max
+		}
+	}
+	
+	// put an "all" file in the lesson directory to show all lessons
+	if _, err := os.Stat(dir+"/all"); err == nil {
+		high = 999
+	}
 
 	files, _ := ioutil.ReadDir(dir)
 	for _, file := range files {
