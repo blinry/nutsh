@@ -10,16 +10,6 @@ import (
 	"time"
 )
 
-var (
-	logfile *os.File
-)
-
-func log(typ string, text string) {
-	s := strconv.Quote(text)
-	logfile.Write([]byte(strconv.FormatInt(time.Now().Unix(), 10)+"\t"+typ+"\t"+s+"\n"))
-	logfile.Sync()
-}
-
 func main() {
 	if len(os.Args) < 3 {
 		fmt.Println("Usage: nutsh (run|test) <tutorial dir> [lesson name]")
@@ -75,11 +65,9 @@ func main() {
 	}
 
 	tut := model.Init(dir, low, high)
-	logfile, _ = os.OpenFile(dir+"/log", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 
 	switch command {
 	case "run":
-		log("begin", "")
 		var l *model.Lesson
 		var exists bool
 		var ok bool
@@ -97,14 +85,10 @@ func main() {
 		}
 		for {
 			l, _ = tut.Lessons[lesson_name]
-			log("start", lesson_name)
 			lesson_name, done = parser.Interpret(l.Root, tut.Common)
 			if done {
-				log("done", lesson_name)
 				l.Done = true
 				tut.SaveProgress()
-			} else {
-				log("quit", lesson_name)
 			}
 			if lesson_name != "" {
 				l, exists = tut.Lessons[lesson_name]
@@ -114,7 +98,6 @@ func main() {
 			}
 			lesson_name, ok = tut.SelectLesson(false)
 			if ! ok {
-				log("exit", "")
 				break
 			}
 		}
@@ -130,5 +113,4 @@ func main() {
 			fmt.Println("All lessons passed!")
 		}
 	}
-	logfile.Close()
 }
