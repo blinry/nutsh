@@ -107,7 +107,7 @@ func (c CLI) QueryInteractive(cmd string, interaction string) (string, bool) {
 	c.allowInteractivity = false
 	if interaction != "" {
 		c.allowInteractivity = true
-		time.Sleep(100*time.Millisecond)
+		time.Sleep(500*time.Millisecond)
 		c.send(interaction)
 	}
 	o, _, ok := c.ReadOutput()
