@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"morr.cc/nutsh.git/dsl"
+	"github.com/blinry/nutsh/dsl"
 	"regexp"
 	//"time"
 	"fmt"

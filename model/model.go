@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"regexp"
 	"github.com/blinry/goyaml"
-	"morr.cc/nutsh.git/parser"
-	"morr.cc/nutsh.git/cli"
+	"github.com/blinry/nutsh/parser"
+	"github.com/blinry/nutsh/cli"
 	"time"
 )
 

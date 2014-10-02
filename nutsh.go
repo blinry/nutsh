@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 	//"io/ioutil"
-	"morr.cc/nutsh.git/model"
-	"morr.cc/nutsh.git/parser"
+	"github.com/blinry/nutsh/model"
+	"github.com/blinry/nutsh/parser"
 )
 
 func main() {

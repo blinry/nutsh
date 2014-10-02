@@ -2,7 +2,7 @@ package bash
 
 import (
 	"fmt"
-	"morr.cc/nutsh.git/dsl"
+	"github.com/blinry/nutsh/dsl"
 	"strconv"
 )
 

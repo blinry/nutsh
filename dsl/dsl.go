@@ -2,7 +2,7 @@ package dsl
 
 import (
 	"fmt"
-	"morr.cc/nutsh.git/cli"
+	"github.com/blinry/nutsh/cli"
 	"os"
 	"os/exec"
 	"os/signal"
